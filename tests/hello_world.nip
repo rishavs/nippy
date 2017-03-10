@@ -1,0 +1,11 @@
+module HelloWorld
+
+@text <= "Hello World"
+say @text
+
+
+@sum <= @add_num (x, y) 
+
+
+
+end
