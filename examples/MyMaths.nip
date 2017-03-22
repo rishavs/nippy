@@ -1,0 +1,69 @@
+MyMaths is module.init
+
+
+# Assignment:
+number::num  << 42
+truth << true
+speak_stuff << toText("bob is ", number, " years old and thats ", truth)
+
+# Conditions:
+neg_number << -42
+
+say (neg_number::?)
+
+# Arrays:
+list << {1, 2, 3, 4, 5}
+
+adder << fn (x::num ,y::num)
+	returns (x + y)::num
+end
+
+less_than_5 << fn (x::num)
+	if (x < 5)
+		== true returns true
+		== false returns false
+		== * returns false::bool
+	end	
+end
+
+
+adder (10,20)
+print_txt "Hi"
+
+# Objects:
+Multiplier << {
+	xero :	 0,
+	fruits : {
+		1 : apple,
+		2 : oranges,
+		3 : peaches
+	},
+  	square : fn(x::num) returns (x * x)::num,
+  	cube :  fn(x::num) returns (x * square(x))::num
+}
+
+a = 2
+say ("cube of given number is :" + Multiplier.cube(a))
+
+#structs
+Point = [
+	x::num,
+	y::num
+] 
+
+Line::Type = [
+	p1::Point,
+	p2::Point
+
+]
+
+
+
+# Array comprehensions:
+cubes = (math.cube num for num in list)
+
+MyMaths.exports = [
+	multiplier.cube,
+	less_than_5,
+
+]

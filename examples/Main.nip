@@ -1,0 +1,33 @@
+/Project/ << {
+	Name: "My Awesome Project",
+	Description: "This project is awesome",
+	Owner: {"Rishav"},
+	COntributors: { "Johhny", "Bonny", "Tronny"},
+	License: "MIT",
+	respository: "https://github.com/rishavs/nippy/"
+	keywords: {"node", "heroku", "express"},
+	engine: "nippy@1.2.3"
+}
+
+/Use/ << {
+	_ : "stdlib",
+	GitPack: "https://github.com/rishavs/Some_Package_01@1.2.3",
+	net: "http-server@2.3.4"
+}
+
+/Modules/ << {
+	_			: "^/MyMaths/",
+	_			: "^/MyVectors/Vec2d.nip",
+	RattyRoutes : "^/Routes.nip"
+}
+
+
+
+b << 3
+say "cube of given number is :" + MyMaths:>Multiplier.cube(3)
+
+
+module.exports << {
+	
+
+}

@@ -208,21 +208,32 @@ nippy doesn't uses `=` for assignment, as is the case in many languages. instead
 
 x << 10
 
+### Basic Types
+
+1. num
+2. text
+3. bool
+4. vec
+5. obj
+6. fn
+7. struct
+
+### Range
+
+{3 to 7 } is the same as {3, 4, 5, 6, 7} which in turn is the same as;
+{1 : 3, 2: 4, 3:5, 4:6, 5:7}
+
+
+
 ### Functions
 
-sum of [x,y] is
-
-​	result x + y
-
-end
-
-sum of [x,y] is				-- block style --
+sum << fn(x,y) is				-- block style --
 
 ​	return x + y
 
 end
 
-sum of [x,y] is x+y			-- single line style --
+sum << fn (x,y) is x+y			-- single line style --
 
 Function Guards
 
@@ -247,6 +258,10 @@ sum of [x,y] is				-- block style --
 ​	end
 
 end
+
+sum << fn (...) is
+
+​	overloaded by
 
 
 
@@ -296,3 +311,10 @@ case (x == y) ?
 
 end
 
+no declaring a variable without giving it a value.
+
+any variable can be null but it will stil have type. 
+
+some_val.type #=> Num
+
+some_val.value #=> None
