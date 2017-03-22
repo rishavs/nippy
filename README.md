@@ -36,7 +36,7 @@ say MyMaths:adder(x,y)
 
 ------
 
-## Core Philosophy:
+## Core Philosophy
 
 1. Easy: Nippy must be easy to learn and use, above anything else. 
 2. Small: Nippy will have a small syntax and only a small feature set.
@@ -164,7 +164,7 @@ The version is optional. Multiple package can be comma separated.
 
 nippy project code will always start at the 
 
-## Some Code snippets
+## Language Concepts
 
 1. ### Comments
 
@@ -190,13 +190,79 @@ Because why the heck not. /~
 
 
 
-1. ### Modules
+### Modules
 
 nippy uses modules as a way of structuring projects and namespacing.
 
+Every program MUST begin at a Main module
+
+It is recommended to have only 1 module in 1 file.
+
+### Namespaces
+
+nippy has no global namespace at all. All namespaces are specific to a module.
+
+### Assignment
+
+nippy doesn't uses `=` for assignment, as is the case in many languages. instead nippy uses `<<` or `>>` symbols for assignments.
+
+x << 10
+
+### Functions
+
+sum of [x,y] is
+
+​	result x + y
+
+end
+
+sum of [x,y] is				-- block style --
+
+​	return x + y
+
+end
+
+sum of [x,y] is x+y			-- single line style --
+
+Function Guards
+
+A functions can have optional guards where attributes of input and output can be given. this ensures that the compiler can check them during compile time and see if there are any cases of type mismatch or such.
+
+sum of [x,y] is				-- block style --
+
+​	guarded by
+
+​		x.type is Int and
+
+​		y.type is Int and
+
+​		result.type is Int and result > x and result > y
+
+​		
+
+​	defined by
+
+​		return x + y
+
+​	end
+
+end
 
 
-1. ### Hello World
+
+### Chaining functions
+
+y << add_two: << find_2_primes: << x
+
+x >> find2primes: >> add_two >> y
+
+
+
+rgb of [RED, BLUE, GREEN] 
+
+## Sample Programs
+
+### Hello World
 
 The good old Hello world program. Where will we be without it?!
 
@@ -230,20 +296,3 @@ case (x == y) ?
 
 end
 
-Assignment
-
-nippy doesn't uses `=` for assignment, as is the case in many languages. instead nippy uses `<<` or `>>` symbols for assignments.
-
-x << 10
-
-
-
-Chaining functions
-
-y << add_two: << find_2_primes: << x
-
-x >> find2primes: >> add_two >> y
-
-
-
-rgb of [RED, BLUE, GREEN] 
