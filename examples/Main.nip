@@ -1,4 +1,4 @@
-/Project/ << {
+Project = {
 	Name: "My Awesome Project",
 	Description: "This project is awesome",
 	Owner: {"Rishav"},
@@ -9,13 +9,13 @@
 	engine: "nippy@1.2.3"
 }
 
-/Use/ << {
+Deps is {
 	_ : "stdlib",
 	GitPack: "https://github.com/rishavs/Some_Package_01@1.2.3",
 	net: "http-server@2.3.4"
 }
 
-/Modules/ << {
+Modules is {
 	_			: "^/MyMaths/",
 	_			: "^/MyVectors/Vec2d.nip",
 	RattyRoutes : "^/Routes.nip"
@@ -23,11 +23,11 @@
 
 
 
-b << 3
+b is 3
 say "cube of given number is :" + MyMaths:>Multiplier.cube(3)
 
 
-module.exports << {
+module.exports is {
 	
 
 }
