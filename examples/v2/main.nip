@@ -1,0 +1,134 @@
+Quick thoughts
+- literate. Everything is a comment. 
+Except the bits which are in the markdown code tags 
+- extremely small. all syntax "should fit on a postcard"
+- compiles to c99
+- Static Typing
+- Impure functional
+- only one way to do anything
+- files as modules
+- fully async, concurrent and parllel by default
+- no globals. everything is local scoped
+- no vars?
+- memory. ARC vs Immix?
+- has algebraic types and maybes
+- how to error? railroad?
+- hot reloading? with a aot release version for speedup?
+- build types [dev(fastest compilation), debug, release(fastest execution and low overhead)]
+- opinionated formatter in compiler itself with opt-out
+
+
+```
+a:int -> 2
+b:str -> "Hello"
+c:truth -> true
+c:truth -> false
+
+show x
+```
+# Rough
+
+Compiler Starts
+- read program file and language grammar 
+- Tokenize and parse grammar
+- raise syntax and parsing errors
+- unfold blocks like loops, functions etc into nodes
+- raise recursion errors
+- Stitch modules and calls
+- raise semantic errors like missing branches in conditionals
+
+AST Generated
+- check types
+- infer types for missing ones
+- raise type errors, if conflict
+- Basic tree shaking/folding??
+
+Clean AST Generated
+
+Transform To X AST/IR/Codegen
+
+
+
+d:list:int -> [2,3]
+e:obj:{str => str} -> {"key" => "value"}
+
+x:int -> 2
+
+do add (y:int):int ->
+    x + y
+end
+
+start ():int ->
+    _ -> show add (1)
+    0
+end
+
+any var, const, module object that needs to be shared should have $ suffix
+local scope will always take precedence. if a var form another scope is to be used, use the full path module.var eg main.x in the add func.
+No modules. the file name is the module namespace. if namespace needs to be changed, change file
+show is a builtin func which pretty prints to console
+
+? checks if a val exists
+
+std:book    -> read stdlib // no need to use brackets if only 1 argument
+BO::book    -> read BasicOprerations from ('../path')
+
+@Const
+#addresses
+$shared
+
+a:int -> 10
+start (a:int):int
+
+    flow with a
+        |> BO.substract #, 5    >> BO.multiply #, 10        >> val is #     >> say #
+        |> amplify #, 2         >> val is #                 >> say #
+        |> say #                >> std.formatter.pretty #
+    end
+
+    return 0
+
+    catching error 
+        if typeof(error) == # // pattern matching
+            # == WrongType ->
+                say("The error type is {{#}}")
+            # == else ->
+                say ("Some unhandled error was found")
+        end
+    end
+end
+
+start
+
+
+take a
+|> fna >> fnb
+|> fnc >> fnd
+
+typedef = recipe?
+
+--------------------------- 
+
+a:int -> 20
+
+share amplify (x:int, y:int):int ->
+    x^y
+end
+
+
+a:int -> 30
+
+do $substract (x:int, y:int):int -> // $ makes a func public
+    x - y
+end
+
+do $add (x:int, y:int):int ->
+    let z = x + y
+    return z
+end
+
+multiply (x:int, y:int):int -> x * y
+
+
+expose(add, substract, multiply)
+
