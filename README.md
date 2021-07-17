@@ -38,12 +38,14 @@ say MyMaths:adder(x,y)
 
 ## Core Philosophy
 
-1. Easy: Nippy must be easy to learn and use, above anything else. 
-2. Small: Nippy will have a small syntax and only a small feature set.
-3. Elegant: The language will always try to be elegant and expressive whenever possible.
-4. Batteries Included: Nippy places more importance on the community and ecosystem than on language semantics.
+1. Batteries Included: Nippy places more importance on the community and ecosystem than on language semantics.
+2. Easy: Nippy must be easy to learn and use, above anything else. 
+3. Small: Nippy will have a small syntax and only a small feature set.
+4. Elegant: The language will always try to be elegant and expressive whenever possible.
+5. One way. There should be only one way to do things in Nippy
 
 While being fast, having low memory overhead, small binaries and other attributes are also very important, nippy will always try adhere closely to its core philosophy.
+Nippy aims to compile down to C99 for interop.
 
 **What Nippy isn't:**
 
@@ -96,6 +98,8 @@ nippy is a language which comes with its own toolset and package manager.
 
 nippy code can be run as simple single files or as entire projects. For any serious development, you will want to get working on a project. However, you can still use your own project structure and simply run it using the `nippy run` command.
 
+nippy package manager will install the latest version of the compiler in global. But for each project, the compiler itself is added as adependency.
+
 #### New nippy project
 
 A new nippy project can be created using the following command:
@@ -124,10 +128,12 @@ ProjectFolder
 	├── docs/
 	├── .gitignore
 	├── README.md
-	└── LICENSE.md
+	├── LICENSE.md
+	└── build.nip
 
 ```
-
+`build.nip` is the project definition and contains details of the project and its dependencies.
+when nippy is run in any project, it will always look for this file to parse through.
 
 
 #### Build project
@@ -140,11 +146,13 @@ Here, if you don't give an `env` identifier, nippy will assume it to be a dev bu
 
 This will create the binaries and place them at `bin/<env>`
 
+`nippy init` can be used to initialize nippy in an existing project directory. This will create a default `build.nip` file in the project root.
+
 #### Run Project
 
 This will likely be the command you use most often. This will compile the project into `bin/<env>` and then run the compiled binary. To use it, type:
 
-`nippy run <env>`
+`nippy run <env?> <loglevel?>`
 
 Here, if you don't give an `env` identifier, nippy will assume it to be a dev build.
 
