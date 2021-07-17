@@ -43,9 +43,10 @@ say MyMaths:adder(x,y)
 3. Small: Nippy will have a small syntax and only a small feature set.
 4. Elegant: The language will always try to be elegant and expressive whenever possible.
 5. One way. There should be only one way to do things in Nippy
+6. Be a good thief. Steal the best ideas from all languages
 
 While being fast, having low memory overhead, small binaries and other attributes are also very important, nippy will always try adhere closely to its core philosophy.
-Nippy aims to compile down to C99 for interop.
+Nippy aims to compile down to C99 for interop. Nippy doesn't try to blaze the frontiers of language design but instead aims to mplement the best ideas from other great languages.
 
 **What Nippy isn't:**
 
