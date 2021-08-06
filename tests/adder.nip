@@ -1,0 +1,67 @@
+-:- this: a single line comment
+
+-: This: a 
+multi line comment :-
+
+-/ start with char and move ahead till you reach whitespace, symbol or comment. then break token. compare with known terms and save as such.
+add flag for alphanumeirc - alphabet/num subtype and for quotes and interpolation. flag for had error. create error list like token list.
+/-
+
+a: Text = "a"
+
+var a:  Num | Nil  = 10         --: declr and assignment on the same line using the ":" operator
+
+b: Text           --: declr and assign can be done separately as well using the "is" operator
+var b = "yo"
+
+b: Bool = true
+l: [Num] = List(1, 2, 3)
+
+Shape: Enum {      --: multi line needs {}
+    | Sqiuggly
+    | Rectangle: Object {width : float, length : float}
+    | Circle   : Object {radius : float}
+    | Prism    : Object {width : float, height : float} |
+}
+
+newShape: Shape = Rectangle(
+    width => 12,
+    length => 10
+)
+
+Customer: { 
+    var First: string,
+    var Last: string,
+    SSN: uint32,
+    AccountNumber: uint32,
+    SaySSN: Func(ssn: Num -> Text) {
+        show ssn
+    }
+}
+
+newCustomer = Customer (
+    First   => "John",
+    Last    => "Doe",
+    SSN     => 1234,
+    AccountNumber => 3456,
+)
+newCustomer.add([prop1, prop2, func1, func2, func3])
+newCustomer.remove([func4, func5])
+
+NumList: List[Num]
+newTextList: [Text] = ["a", "b"]
+
+sayName: Fun(name: Text -> Text) {
+    return "My name: {{name}}"
+}
+
+show sayName("Donkey Kong")
+
+while (true) {
+
+    break sayName;
+}
+
+[2..10, 1].each (i, v) {
+
+}

@@ -1,0 +1,19 @@
+{
+    "terms": {
+        "Func": "Type<Func>Declr",
+        "var": "VariableDeclr",
+        "Num": "Type<Num>Declr",
+        "Nil": "Type<Nil>Declr"
+    },
+    "symbols": {
+        "=": "Operator",
+        "+": "Operator",
+        "-": "Operator",
+        "*": "Operator",
+        "/": "Operator",
+        "{": "Operator",
+        "}": "Operator",
+        "(": "Operator",
+        ")": "Operator"
+    }
+}
