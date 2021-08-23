@@ -1,4 +1,4 @@
-import defs, lexer, parser, presenter
+import lexer, parser, presenter
 
 let srcFile = readFile("./tests/adder.nip")
 

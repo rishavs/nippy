@@ -165,6 +165,8 @@ Nippy is a good thief. It plans to steal all the best features from the best lan
 
 - Pyret's inline tests for functions
 
+- Zig's errdefer and custom allocators?
+
 Other key language features will be;
 
 - JSON is a first class citizen

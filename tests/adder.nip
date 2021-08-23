@@ -1,67 +1,85 @@
--:- this: a single line comment
+~~ this: a single line comment
 
--: This: a 
-multi line comment :-
+~/ This: a 
+multi line comment /~
 
--/ start with char and move ahead till you reach whitespace, symbol or comment. then break token. compare with known terms and save as such.
+~/ start with char and move ahead till you reach whitespace, symbol or comment. then break token. compare with known terms and save as such.
 add flag for alphanumeirc - alphabet/num subtype and for quotes and interpolation. flag for had error. create error list like token list.
-/-
+/~
 
-a: Text = "a"
+a: Text = ``a``
 
-var a:  Num | Nil  = 10         --: declr and assignment on the same line using the ":" operator
+var a: | Num | Nil  = 10         ~~ declr and assignment on the same line using the ``:`` operator
 
-b: Text           --: declr and assign can be done separately as well using the "is" operator
-var b = "yo"
+txt: Text           ~~ declr and assign can be done separately as well using the ``is`` operator
+var txt = ``yo! Haven't seen you in last {{3}} months``
 
-b: Bool = true
-l: [Num] = List(1, 2, 3)
+boo: Bool = true
+bag: [Num] = List(1, 2, 3)
 
-Shape: Enum {      --: multi line needs {}
-    | Sqiuggly
-    | Rectangle: Object {width : float, length : float}
-    | Circle   : Object {radius : float}
-    | Prism    : Object {width : float, height : float} |
-}
 
+Shape: 
+    | Sqiuggly                      ~~ The leading "|" is optional
+    | Rectangle: Obj{width : float, length : float}
+    | Circle   : Obj{radius : float, area: Fun}
+    | Prism    : Obj{width : float, height : float}
+
+    
 newShape: Shape = Rectangle(
-    width => 12,
-    length => 10
+    width = 12,
+    length = 10
 )
 
-Customer: { 
-    var First: string,
-    var Last: string,
-    SSN: uint32,
-    AccountNumber: uint32,
-    SaySSN: Func(ssn: Num -> Text) {
+Customer: Obj(First: string, Last: string) {
+    // var First: string,
+    // var Last: string,
+    var purchasedCOunt: Int
+    ssn: Int,
+    accountNumber: Int,
+    saySSN: Fun(ssn: Num -> Text) {
         show ssn
     }
 }
 
 newCustomer = Customer (
-    First   => "John",
-    Last    => "Doe",
-    SSN     => 1234,
-    AccountNumber => 3456,
+    First   = ``John``,
+    Last    = ``Doe``,
 )
-newCustomer.add([prop1, prop2, func1, func2, func3])
-newCustomer.remove([func4, func5])
+newCustomer.addTraits([prop1, prop2, func1, func2, func3], Countable)
+newCustomer.removeTraits([func4, func5])
 
+~/ A trait is a named list of functions and variables (list of declared identifiers) which can be linked to object instances. eg. Iterable, COuntable, BlueEyed etc) /~
+
+~/
 NumList: List[Num]
-newTextList: [Text] = ["a", "b"]
+newTextList: [Text] = [``a``, ``b``]
 
 sayName: Fun(name: Text -> Text) {
-    return "My name: {{name}}"
+    return ``My name: {{name}}``
 }
 
-show sayName("Donkey Kong")
+show sayName(``Donkey Kong``)
 
-while (true) {
+^.^ code blocks ^.^ 
 
-    break sayName;
+aLoop = While :
+
+    break aLoop;
 }
+
+aLoop(true)
 
 [2..10, 1].each (i, v) {
 
 }
+
+somevar = when (x) {
+    1 -> returnSomething(),
+    2 -> resturnSomethingElse(),
+    _ -> whatever()
+
+}
+
+y = if x elseif else 
+
+/~
