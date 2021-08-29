@@ -7,9 +7,9 @@ multi line comment /~
 add flag for alphanumeirc - alphabet/num subtype and for quotes and interpolation. flag for had error. create error list like token list.
 /~
 
-a: Text = ``a``
+t: Text = `` a ``
 
-var a: | Num | Nil  = 10         ~~ declr and assignment on the same line using the ``:`` operator
+var a:| @Num |-Nil#  =10         ~~ declr and assignment on the same line using the ``:`` operator
 
 txt: Text           ~~ declr and assign can be done separately as well using the ``is`` operator
 var txt = ``yo! Haven't seen you in last {{3}} months``

@@ -1,14 +1,21 @@
-import lexer, parser, presenter
+import lexer, parser, presenter, times
 
 let srcFile = readFile("./tests/adder.nip")
 
-var result:bool = tokenize(srcFile)
-    .parse
-    .present
+let compileStartTime = getTime()
 
-if result:
-    quit(QuitSuccess)
-else:
-    quit(QuitFailure)
+
+# var result:bool = tokenize(srcFile)
+#     .parse
+#     .present
+
+lex(srcFile)
+
+echo "Time taken for Compilation: ", getTime() - compileStartTime
+
+# if result:
+#     quit(QuitSuccess)
+# else:
+#     quit(QuitFailure)
 
 

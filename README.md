@@ -215,6 +215,8 @@ Other key language features will be;
 
 - no if else or case statements
 
+- 1 based indexing by default, but allow devs to change this
+
 Memory Management;
 
 - Manual to start with. see https://www.microsoft.com/en-us/research/wp-content/uploads/2017/03/kedia2017mem.pdf
