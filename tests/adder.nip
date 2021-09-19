@@ -1,21 +1,21 @@
-~~ this: a single line comment
-
-~/ This: a 
-multi line comment /~
+e~~ this: a single line comment
+s
+x~/ This: a 
+multi line comment /~t
 
 ~/ start with char and move ahead till you reach whitespace, symbol or comment. then break token. compare with known terms and save as such.
 add flag for alphanumeirc - alphabet/num subtype and for quotes and interpolation. flag for had error. create error list like token list.
 /~
 
-t: Text = `` a ``
+t: Text =`` a ⛄``
 
 var a:| @Num |-Nil#  =10         ~~ declr and assignment on the same line using the ``:`` operator
 
 txt: Text           ~~ declr and assign can be done separately as well using the ``is`` operator
-var txt = ``yo! Haven't seen you in last {{3}} months``
+var txt = ``Yo! Haven't seen you in last {{toInt(``3``) && (1 + 3)}} months``
 
 boo: Bool = true
-bag: [Num] = List(1, 2, 3)
+bag: [Num] = List(1.7, 2, 3)
 
 
 Shape: 

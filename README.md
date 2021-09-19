@@ -217,6 +217,8 @@ Other key language features will be;
 
 - 1 based indexing by default, but allow devs to change this
 
+- state machine as a first class citizen. think a directional enum where values can only go in the defined direction
+
 Memory Management;
 
 - Manual to start with. see https://www.microsoft.com/en-us/research/wp-content/uploads/2017/03/kedia2017mem.pdf
