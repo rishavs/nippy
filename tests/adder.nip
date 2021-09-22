@@ -7,7 +7,15 @@ multi line comment /~t
 add flag for alphanumeirc - alphabet/num subtype and for quotes and interpolation. flag for had error. create error list like token list.
 /~
 
-t: Text =`` a ⛄``
+t: Text <=`` a ⛄``
+!==
+++
+^&
+-
+/
+()
+
+1 + 2
 
 var a:| @Num |-Nil#  =10         ~~ declr and assignment on the same line using the ``:`` operator
 

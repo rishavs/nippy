@@ -6,6 +6,8 @@ proc lex* (src: string) =
     type
         ProgramMode = enum
             code, slComment, mlComment, text, interpolCode, interpolText
+        ChunkType = enum
+            calphanum, ctext, csymbol
 
     var
         chunk = ""
@@ -13,6 +15,10 @@ proc lex* (src: string) =
         line = 1
         bag: seq[string]
         mode: ProgramMode = code
+        ctype: ChunkType = calphanum
+        isChunkAlphaNum: bool = false
+        tokens: seq[CToken]
+        errors: seq[CError]
 
     while pos + 1 <= src.len:
 
@@ -32,13 +38,29 @@ proc lex* (src: string) =
             if src[pos] == '`' and src[pos + 1] == '`':
                 echo "Closing String at line ", line
                 mode = code
-                if chunk != "": bag.add chunk
+                if chunk != "": 
+                    bag.add chunk
+                    tokens.add CToken(
+                        kind       : "TEXT",
+                        value      : chunk,
+                        line       : line,
+                        filePos     : pos,
+                        length      : chunk.len
+                    )
                 chunk = ""
                 pos = pos + 1
             elif src[pos] == '{' and src[pos + 1] == '{':
                 echo "Opening Interpol at line ", line
                 mode = interpolCode
-                if chunk != "": bag.add chunk
+                if chunk != "": 
+                    bag.add chunk
+                    tokens.add CToken(
+                        kind       : "TEXT",
+                        value      : chunk,
+                        line       : line,
+                        filePos     : pos,
+                        length      : chunk.len
+                    )
                 chunk = ""
                 pos = pos + 1
             else:
@@ -61,20 +83,84 @@ proc lex* (src: string) =
             # lex the code
             # elif double symbol
             elif doubleSymbols.hasKey(src[pos] & src[pos + 1]):
-                bag.add (src[pos] & src[pos + 1])
+                var dubSym = (src[pos] & src[pos + 1])
+                bag.add dubSym
+                tokens.add CToken(
+                    kind        : doubleSymbols[dubSym],
+                    value       : dubSym,
+                    line        : line,
+                    filePos     : pos,
+                    length      : 2
+                )
                 pos = pos + 1
+
             # handle alphanumerics
             elif src[pos] in alphanum:
                 chunk.add src[pos]
+                isChunkAlphaNum = true
             # handle whitespace 
             elif src[pos] in whitespace:
-                if chunk != "": bag.add chunk
+                if chunk != "": 
+                    bag.add chunk
+                    if isChunkAlphaNum == true:
+                        if keywords.hasKey(chunk):
+                            tokens.add CToken(
+                                kind        : keywords[chunk],
+                                value       : chunk,
+                                line        : line,
+                                filePos     : pos,
+                                length      : chunk.len
+                            )
+                        else:
+                            tokens.add CToken(
+                                kind        : "POSSIBLE_IDENTIFIER",
+                                value       : chunk,
+                                line        : line,
+                                filePos     : pos,
+                                length      : chunk.len
+                            )
+                isChunkAlphaNum = false
                 chunk = ""
             # handle symbols and everything else
             else:
-                if chunk != "": bag.add chunk
+                if chunk != "": 
+                    bag.add chunk
+                    if isChunkAlphaNum == true:
+                        if keywords.hasKey(chunk):
+                            tokens.add CToken(
+                                kind        : keywords[chunk],
+                                value       : chunk,
+                                line        : line,
+                                filePos     : pos,
+                                length      : chunk.len
+                            )
+                        else:
+                            tokens.add CToken(
+                                kind        : "POSSIBLE_IDENTIFIER",
+                                value       : chunk,
+                                line        : line,
+                                filePos     : pos,
+                                length      : chunk.len
+                            )
+                isChunkAlphaNum = false
                 chunk = ""
                 bag.add $src[pos]
+                if singleSymbols.hasKey($src[pos]):
+                    tokens.add CToken(
+                        kind        : singleSymbols[$src[pos]],
+                        value       : $src[pos],
+                        line        : line,
+                        filePos     : pos,
+                        length      : 1
+                    )
+                else:
+                    tokens.add CToken(
+                        kind        : "UNKNOWN_SYMBOL",
+                        value       : $src[pos],
+                        line        : line,
+                        filePos     : pos,
+                        length      : 1
+                    )
 
         of interpolCode:
             if src[pos] == '`' and src[pos + 1] == '`':
@@ -89,26 +175,97 @@ proc lex* (src: string) =
             # lex the code
             # elif double symbol
             elif doubleSymbols.hasKey(src[pos] & src[pos + 1]):
-                bag.add (src[pos] & src[pos + 1])
+                var dubSym = (src[pos] & src[pos + 1])
+                bag.add dubSym
+                tokens.add CToken(
+                    kind        : doubleSymbols[dubSym],
+                    value       : dubSym,
+                    line        : line,
+                    filePos     : pos,
+                    length      : 2
+                )
                 pos = pos + 1
             # handle alphanumerics
             elif src[pos] in alphanum:
                 chunk.add src[pos]
             # handle whitespace 
             elif src[pos] in whitespace:
-                if chunk != "": bag.add chunk
+                if chunk != "": 
+                    bag.add chunk
+                    if isChunkAlphaNum == true:
+                        if keywords.hasKey(chunk):
+                            tokens.add CToken(
+                                kind        : keywords[chunk],
+                                value       : chunk,
+                                line        : line,
+                                filePos     : pos,
+                                length      : chunk.len
+                            )
+                        else:
+                            tokens.add CToken(
+                                kind        : "POSSIBLE_IDENTIFIER",
+                                value       : chunk,
+                                line        : line,
+                                filePos     : pos,
+                                length      : chunk.len
+                            )
+                isChunkAlphaNum = false
                 chunk = ""
             # handle symbols and everything else
             else:
-                if chunk != "": bag.add chunk
+                if chunk != "": 
+                    bag.add chunk
+                    if isChunkAlphaNum == true:
+                        if keywords.hasKey(chunk):
+                            tokens.add CToken(
+                                kind        : keywords[chunk],
+                                value       : chunk,
+                                line        : line,
+                                filePos     : pos,
+                                length      : chunk.len
+                            )
+                        else:
+                            tokens.add CToken(
+                                kind        : "POSSIBLE_IDENTIFIER",
+                                value       : chunk,
+                                line        : line,
+                                filePos     : pos,
+                                length      : chunk.len
+                            )
+                isChunkAlphaNum = false
                 chunk = ""
                 bag.add $src[pos]
+                if singleSymbols.hasKey($src[pos]):
+                    tokens.add CToken(
+                        kind        : singleSymbols[$src[pos]],
+                        value       : $src[pos],
+                        line        : line,
+                        filePos     : pos,
+                        length      : 1
+                    )
+                else:
+                    tokens.add CToken(
+                        kind        : "UNKNOWN_SYMBOL",
+                        value       : $src[pos],
+                        line        : line,
+                        filePos     : pos,
+                        length      : 1
+                    )
+
 
         of interpolText:
             if src[pos] == '`' and src[pos + 1] == '`':
                 echo "Closing Interpol String at line ", line
                 mode = interpolCode
-                bag.add chunk
+                if chunk != "": 
+                    bag.add chunk
+                    tokens.add CToken(
+                        kind       : "TEXT",
+                        value      : chunk,
+                        line       : line,
+                        filePos     : pos,
+                        length      : chunk.len
+                    )
                 chunk = ""
                 pos = pos + 1
             else:
@@ -126,118 +283,7 @@ proc lex* (src: string) =
         pos = pos + 1
         
     echo bag
-
-
-proc lexGood* (src: string) =
-        
-    type
-        ProgramMode = enum
-            code, slComment, mlComment, text
-
-    var
-        pos = 0
-        line = 1
-        chunk = ""
-        bag: seq[string]
-        mode: ProgramMode = code
-
-    while pos + 1 < src.len:
-
-        # handle newline separately
-        if src[pos] == '\n': inc line
-
-        # handle mode switches
-        # case mode:
-        # of slComment:
-        # of mlComment:
-        # of text:
-        # of code:
-
-
-        if src[pos] == '~' and src[pos + 1] == '~' :
-            echo "Opening SL Comment at line ", line
-            pos = pos + 2
-            while pos <= src.len:
-                if src[pos] == '\n':
-                    echo "Closing SL Comment at line ", line
-                    inc line
-                    break
-                else:
-                    pos = pos + 1
-
-        elif  src[pos] == '~' and src[pos + 1] == '/' :
-            echo "Opening ML Comment at line ", line
-            pos = pos + 2
-            while pos + 1 < src.len:
-                if src[pos] == '\n': inc line
-                if  src[pos] == '/' and src[pos + 1] == '~':
-                    echo "Closing ML Comment at line ", line
-                    pos = pos + 1
-                    break
-                else:
-                    pos = pos + 1
-             
-        elif  (src[pos] == '`' and src[pos + 1] == '`') or (src[pos] == '}' and src[pos + 1] == '}') :
-            echo "Opening String at line ", line
-            var chunk = ""
-            pos = pos + 2
-            while pos + 1 < src.len:
-                if src[pos] == '\n': inc line
-
-                if src[pos] == '`' and src[pos + 1] == '`': 
-                    echo "Closing String at line ", line
-                    pos = pos + 1
-                    break
-                elif src[pos] == '{' and src[pos + 1] == '{':
-                    echo "Closing String at line ", line
-                    pos = pos - 1
-                    break
-                else:
-                    chunk.add src[pos]
-                    pos = pos + 1
-            bag.add chunk
-            # echo src[pos], src[pos + 1]
-
-        elif  src[pos] == '{' and src[pos + 1] == '{' :
-            echo "Opening Interpol at line ", line
-            # var chunk = ""
-
-            #  [TODO] handle interpol like code block
-            while pos + 1 < src.len:
-                if src[pos] == '\n': inc line
-                if src[pos] == '}' and src[pos + 1] == '}':
-                    echo "Closing Interpol at line ", line
-                    pos = pos - 1
-                    break
-                else:
-                    pos = pos + 1
-
-        # if char is a alhpanum - break into alphabet and num
-        elif pos < src.len  and src[pos] in alphanum:
-            chunk = ""
-            # var next = pos
-            while pos <= src.len:
-                if not (src[pos] in alphanum):
-                    break
-                else:
-                    chunk.add src[pos]
-                    pos = pos + 1
-
-            bag.add chunk
-            pos = pos - 1
-
-        # # if char is symbol
-        elif not (src[pos] in whitespace) and not (src[pos] in alphanum):
-            if doubleSymbols.hasKey(src[pos] & src[pos + 1]):
-                bag.add (src[pos] & src[pos + 1])
-                pos = pos + 1
-
-            elif singleSymbols.hasKey($src[pos]):
-                bag.add $src[pos]
-            else:
-                bag.add $src[pos]
-                # Raise error - unrecognised character
-
-        pos = pos + 1
-
-    echo bag
+    echo tokens
+    for t in tokens:
+        echo t.kind, "    ", t.value
+    echo errors
