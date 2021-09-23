@@ -1,21 +1,28 @@
 # line 177
-import defs, tables
+import defs, tables, times
 
-proc lex* (src: string) =
-    # string done
+proc lex* (src: string):(CErrors, CTokens, CMeta) =
+
+    # start timer
+    let lexStartTime = getTime()
+
     type
         ProgramMode = enum
             code, slComment, mlComment, text, interpolCode, interpolText
         ChunkType = enum
-            calphanum, ctext, csymbol
+            cIdent, cNum, cUnknown
 
     var
         chunk = ""
         pos = 0
+        currChar, nextChar: char
         line = 1
+        currLineStr = ""
+        lastLineStr = ""
+        lastMin1LineStr = ""
         bag: seq[string]
         mode: ProgramMode = code
-        ctype: ChunkType = calphanum
+        ctype: ChunkType = cUnknown
         isChunkAlphaNum: bool = false
         tokens: seq[CToken]
         errors: seq[CError]
@@ -25,18 +32,18 @@ proc lex* (src: string) =
         case mode:
         of slComment:
             if src[pos] == '\n':
-                echo "Closing SL Comment at line ", line
+                # echo "Closing SL Comment at line ", line
                 mode = code
 
         of mlComment:
             if  src[pos] == '/' and src[pos + 1] == '~':
-                echo "Closing ML Comment at line ", line
+                # echo "Closing ML Comment at line ", line
                 mode = code
                 pos = pos + 1
 
         of text:
             if src[pos] == '`' and src[pos + 1] == '`':
-                echo "Closing String at line ", line
+                # echo "Closing String at line ", line
                 mode = code
                 if chunk != "": 
                     bag.add chunk
@@ -50,7 +57,7 @@ proc lex* (src: string) =
                 chunk = ""
                 pos = pos + 1
             elif src[pos] == '{' and src[pos + 1] == '{':
-                echo "Opening Interpol at line ", line
+                # echo "Opening Interpol at line ", line
                 mode = interpolCode
                 if chunk != "": 
                     bag.add chunk
@@ -68,15 +75,15 @@ proc lex* (src: string) =
 
         of code:
             if src[pos] == '~' and src[pos + 1] == '~' :
-                echo "Opening SL Comment at line ", line
+                # echo "Opening SL Comment at line ", line
                 mode = slComment
                 pos = pos + 1
             elif  src[pos] == '~' and src[pos + 1] == '/' :
-                echo "Opening ML Comment at line ", line
+                # echo "Opening ML Comment at line ", line
                 mode = mlComment
                 pos = pos + 1
             elif src[pos] == '`' and src[pos + 1] == '`':
-                echo "Opening String at line ", line
+                # echo "Opening String at line ", line
                 mode = text
                 pos = pos + 1
 
@@ -113,7 +120,7 @@ proc lex* (src: string) =
                             )
                         else:
                             tokens.add CToken(
-                                kind        : "POSSIBLE_IDENTIFIER",
+                                kind        : "ALPHANUM",
                                 value       : chunk,
                                 line        : line,
                                 filePos     : pos,
@@ -136,7 +143,7 @@ proc lex* (src: string) =
                             )
                         else:
                             tokens.add CToken(
-                                kind        : "POSSIBLE_IDENTIFIER",
+                                kind        : "ALPHANUM",
                                 value       : chunk,
                                 line        : line,
                                 filePos     : pos,
@@ -164,11 +171,11 @@ proc lex* (src: string) =
 
         of interpolCode:
             if src[pos] == '`' and src[pos + 1] == '`':
-                echo "Opening Interpol String at line ", line
+                # echo "Opening Interpol String at line ", line
                 mode = interpolText
                 pos = pos + 1
             elif src[pos] == '}' and src[pos + 1] == '}':
-                echo "Closing Interpol at line ", line
+                # echo "Closing Interpol at line ", line
                 mode = text
                 pos = pos + 1
             
@@ -203,7 +210,7 @@ proc lex* (src: string) =
                             )
                         else:
                             tokens.add CToken(
-                                kind        : "POSSIBLE_IDENTIFIER",
+                                kind        : "ALPHANUM",
                                 value       : chunk,
                                 line        : line,
                                 filePos     : pos,
@@ -226,7 +233,7 @@ proc lex* (src: string) =
                             )
                         else:
                             tokens.add CToken(
-                                kind        : "POSSIBLE_IDENTIFIER",
+                                kind        : "ALPHANUM",
                                 value       : chunk,
                                 line        : line,
                                 filePos     : pos,
@@ -255,7 +262,7 @@ proc lex* (src: string) =
 
         of interpolText:
             if src[pos] == '`' and src[pos + 1] == '`':
-                echo "Closing Interpol String at line ", line
+                # echo "Closing Interpol String at line ", line
                 mode = interpolCode
                 if chunk != "": 
                     bag.add chunk
@@ -276,14 +283,20 @@ proc lex* (src: string) =
             # hanlde alphanum
             # handle symbols
 
+        currLineStr.add src[pos]
 
         # handle newline separately
-        if src[pos] == '\n': inc line
+        if src[pos] == '\n': 
+            inc line
+            lastMin1LineStr = lastLineStr
+            lastLineStr = currLineStr
+            currLineStr = ""
 
         pos = pos + 1
-        
-    echo bag
-    echo tokens
-    for t in tokens:
-        echo t.kind, "    ", t.value
-    echo errors
+
+    var metadata = CMeta(
+            lexTime : getTime() - lexStartTime,
+            linesCompiled: line
+        )
+
+    return (errors, tokens, metadata)

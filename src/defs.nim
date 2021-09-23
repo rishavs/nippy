@@ -1,4 +1,4 @@
-import tables
+import tables, times
 
 type
     CToken* = object
@@ -25,8 +25,8 @@ type
         line5Txt*   : string
 
     CMeta* = object
-        lexTime*        : int
-        parseTime*      : int
+        lexTime*        : Duration
+        parseTime*      : Duration
         linesCompiled*  : int
 
     Lexer* = object
