@@ -1,5 +1,6 @@
-import { LexingContext } from "./defs";
+import { LexingContext, ParsingContext } from "./defs";
 import { lexFile } from "./lexer";
+import { parseFile } from "./parser";
 
 export const transpileFile = async (filepath:string, src: string) => {
     // On any error in a stage, recover and document all errors for that stage
@@ -29,16 +30,21 @@ export const transpileFile = async (filepath:string, src: string) => {
     // // --------------------------------------
     // // Parsing
     // // --------------------------------------
-    // let p: ParsingContext = {
-    //     tokens: lexingResult as Token[],
-    //     i: 0,
-    // }
-    // let parsingStart = Date.now();
-    // let parsingResult = parse_file(p);
-    // let parsingDuration = Date.now() - parsingStart;
+    let p = new ParsingContext(filepath, l.tokens);
+    let parsingStart = Date.now();
+    parseFile(p);
+    let parsingDuration = Date.now() - parsingStart;
 
-    // console.log(`------------- Parsing : ${parsingDuration}ms ---------------`);
-    // console.log(JSON.stringify(parsingResult, null, 2));
+    if (p.errors.length > 0) {
+        console.log(`Parsing Failed. ${p.errors.length} errors found.`);
+        for (let error of p.errors) {
+            console.error(error);
+        }
+        return false;
+    }
+
+    console.log(`------------- Parsing : ${parsingDuration}ms ---------------`);
+    console.log(JSON.stringify(p.program, null, 2));
 
     // if (Array.isArray(parsingResult)) {
     //     console.error(parsingResult);

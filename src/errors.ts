@@ -67,3 +67,42 @@ export class UnclosedDelimiterError extends TranspilingError {
         }
     }
 }
+
+
+// --------------------------------------
+// Parser Errors
+// --------------------------------------
+
+export class MissingSyntaxError extends TranspilingError {
+    ok: boolean = false
+    constructor(expectedSyntax: string, filepath:string, at: number, line: number, found?: string, ) {
+        let expected = `Expected ${expectedSyntax} at ${line}:${at} ,`
+        let got = found
+            ? `but instead found "${found}"` 
+            : `but instead reached end of input`
+        super(expected + got, filepath, at, line);
+        this.name = "Syntax Error";
+        
+        // Modify the stack trace to exclude the constructor call
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, MissingSyntaxError);
+        }
+    }
+}
+
+export class MissingSpecificTokenError extends TranspilingError {
+    ok: boolean = false
+    constructor(expectedSyntax: string, expectedTokenKind: string, filepath:string, at: number, line: number, found?: string) {
+        let expected = `Expected ${expectedTokenKind} for ${expectedSyntax} at ${line}:${at},`
+        let got = found
+            ? `but instead found "${found}"` 
+            : `but instead reached end of input`
+        super(expected + got, filepath, at, line);
+        this.name = "Syntax Error";
+        
+        // Modify the stack trace to exclude the constructor call
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, MissingSpecificTokenError);
+        }
+    }
+}

@@ -1,6 +1,3 @@
-13 -- first comment
-
--- 2nd comment
-4.56 -[ 2nd
-comment
- 7.8
+let x  = 4
+let var y = 3
+y = x

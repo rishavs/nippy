@@ -1,4 +1,5 @@
-import type { TranspilingError } from "./errors"
+import { BlockNode, RootNode } from "./ast";
+import { TranspilingError } from "./errors"
 
 export class Token {
     kind:   string;
@@ -33,4 +34,22 @@ export class LexingContext {
     }
 }
 
+export class ParsingContext {
+    filepath: string;
+    tokens: Token[];
+
+    errors: TranspilingError[] = [];
+    program: RootNode;
+    i: number;
+    currentDepth: number = 0;
+
+    constructor(filepath:string, tokens: Token[]) {
+        this.filepath = filepath;
+        this.tokens = tokens;
+        this.i = 0;
+        
+        let block = new BlockNode(0, 0, []);
+        this. program = new RootNode(0, 0, block);
+    }
+}
 
