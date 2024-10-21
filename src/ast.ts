@@ -86,3 +86,25 @@ export class FloatNode extends ExpressionNode {
     }
 }
 
+// ---------------------------
+// Walker
+// ---------------------------
+export const walk = (node: BaseNode, depth:number, fn: Function) => {
+    fn(node, depth);
+    if (node instanceof RootNode) {
+        walk(node.block, depth + 1, fn);
+    } else if (node instanceof BlockNode) {
+        node.statements.forEach((stmt) => walk(stmt, depth + 1, fn));
+    } else if (node instanceof DeclarationNode) {
+        walk(node.identifier, depth + 1, fn);
+        if (node.assignment) {
+            walk(node.assignment, depth + 1, fn);
+        }
+    } else if (node instanceof IdentifierNode) {
+        // do nothing
+    } else if (node instanceof IntNode) {
+        // do nothing
+    } else if (node instanceof FloatNode) {
+        // do nothing
+    }
+}

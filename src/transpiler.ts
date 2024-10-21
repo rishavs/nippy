@@ -1,3 +1,4 @@
+import { BaseNode, ExpressionNode, StatementNode, walk } from "./ast";
 import { LexingContext, ParsingContext } from "./defs";
 import { lexFile } from "./lexer";
 import { parseFile } from "./parser";
@@ -44,16 +45,19 @@ export const transpileFile = async (filepath:string, src: string) => {
     }
 
     console.log(`------------- Parsing : ${parsingDuration}ms ---------------`);
-    console.log(JSON.stringify(p.program, null, 2));
+    // console.log(JSON.stringify(p.program, null, 2));
 
-    // if (Array.isArray(parsingResult)) {
-    //     console.error(parsingResult);
-    //     process.exit(1);
-    // }
-    // let code = gen_root(parsingResult);
-    // console.log(`------------- Codegen : ${Date.now() - parsingEnd}ms ---------------`);    
-    // console.log("Generated: ", code);
-    // await gen_c99(parsingResult)
+    // print using walker
+    walk(p.program, 0, (node: any, depth: number) => {
+        let indent = "  ".repeat(depth); // Use depth for indentation
+        let keyValPairs = Object.entries(node).map(([key, val]) => {
+            if (["at", "line", "isMutable", "isNewDeclaration"].includes(key)) {
+                return `${key}: ${val}`;
+            }
+        }).filter(Boolean);
+
+        console.log(`${indent}${node.kind} ${node.value || ""} { ${keyValPairs.join(", ")} }`);
+    });
 
     return transpilingResult;
 }
