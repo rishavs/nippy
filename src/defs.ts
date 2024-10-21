@@ -47,9 +47,27 @@ export class ParsingContext {
         this.filepath = filepath;
         this.tokens = tokens;
         this.i = 0;
-        
+
         let block = new BlockNode(0, 0, []);
         this. program = new RootNode(0, 0, block);
     }
 }
 
+export class CodegenContext {
+    cFileCode   : string = "";
+    hFileCode   : string = "";
+
+    program     : RootNode;
+    filepath    : string;
+
+    currentDepth: number = 0;
+
+    usesString  : boolean = false;
+    usesInt     : boolean = false;
+    usesFloat   : boolean = false;
+
+    constructor(filepath: string, program: RootNode) {
+        this.program = program;
+        this.filepath = filepath;
+    }
+}

@@ -44,7 +44,7 @@ export class BlockNode extends BaseNode {
 }
 
 export class DeclarationNode extends StatementNode {
-    isMutable?: boolean;
+    isMutable: boolean;
     isNewDeclaration: boolean;
     identifier: IdentifierNode;
     assignment: ExpressionNode | null;
@@ -100,11 +100,5 @@ export const walk = (node: BaseNode, depth:number, fn: Function) => {
         if (node.assignment) {
             walk(node.assignment, depth + 1, fn);
         }
-    } else if (node instanceof IdentifierNode) {
-        // do nothing
-    } else if (node instanceof IntNode) {
-        // do nothing
-    } else if (node instanceof FloatNode) {
-        // do nothing
-    }
+    } 
 }

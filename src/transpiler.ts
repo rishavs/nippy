@@ -1,5 +1,6 @@
-import { BaseNode, ExpressionNode, StatementNode, walk } from "./ast";
-import { LexingContext, ParsingContext } from "./defs";
+import { RootNode, walk } from "./ast";
+import { genCode } from "./codegen";
+import { CodegenContext, LexingContext, ParsingContext } from "./defs";
 import { lexFile } from "./lexer";
 import { parseFile } from "./parser";
 
@@ -28,9 +29,9 @@ export const transpileFile = async (filepath:string, src: string) => {
         console.log(JSON.stringify(token));
     }
 
-    // // --------------------------------------
-    // // Parsing
-    // // --------------------------------------
+    // --------------------------------------
+    // Parsing
+    // --------------------------------------
     let p = new ParsingContext(filepath, l.tokens);
     let parsingStart = Date.now();
     parseFile(p);
@@ -58,6 +59,14 @@ export const transpileFile = async (filepath:string, src: string) => {
 
         console.log(`${indent}${node.kind} ${node.value || ""} { ${keyValPairs.join(", ")} }`);
     });
+
+    // --------------------------------------
+    // code generation
+    // --------------------------------------    
+    let g = new CodegenContext(filepath, p.program);
+    genCode(g);
+    console.log(g.cFileCode)
+    // Any failure in codegen is fatal
 
     return transpilingResult;
 }
