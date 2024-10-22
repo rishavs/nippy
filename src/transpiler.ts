@@ -35,7 +35,8 @@ export const transpileFile = async (filepath:string, src: string) => {
     let p = new ParsingContext(filepath, l.tokens);
     let parsingStart = Date.now();
     parseFile(p);
-    let parsingDuration = Date.now() - parsingStart;
+    let parsingEnd = Date.now()
+    let parsingDuration = parsingEnd - parsingStart;
 
     if (p.errors.length > 0) {
         console.log(`Parsing Failed. ${p.errors.length} errors found.`);
@@ -65,6 +66,8 @@ export const transpileFile = async (filepath:string, src: string) => {
     // --------------------------------------    
     let g = new CodegenContext(filepath, p.program);
     genCode(g);
+    let codegenDuration = Date.now() - parsingEnd
+    console.log(`------- Generating Code : ${codegenDuration}ms -------------`);
     console.log(g.cFileCode)
     // Any failure in codegen is fatal
 

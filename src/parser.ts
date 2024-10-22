@@ -111,7 +111,7 @@ export const declaration = (p: ParsingContext): DeclarationNode | TranspilingErr
         return assignment;
     }
     
-    return new DeclarationNode(nodeStart, assignment.line, isNewDeclaration, isMutable, id, assignment);
+    return new DeclarationNode(nodeStart, assignment.line, isMutable, isNewDeclaration, id, assignment);
 
 }
 
