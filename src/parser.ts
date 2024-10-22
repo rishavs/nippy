@@ -6,6 +6,7 @@ export const parseFile = (p: ParsingContext) => {
 
     let bl = block(p);
     if (bl instanceof BlockNode) {
+        bl.parent = p.program;
         p.program.block = bl;
     } else {
         p.errors = bl;
@@ -13,15 +14,19 @@ export const parseFile = (p: ParsingContext) => {
 }
 
 export const block = (p: ParsingContext): BlockNode | TranspilingError[] => {
+
     let token = p.tokens[p.i];
     let stmts: StatementNode[] = [];
     let errors: TranspilingError[] = [];
+
+    let block = new BlockNode(token.start, token.line, stmts);
 
     while (p.i < p.tokens.length) {
         token = p.tokens[p.i];
 
         let stmt = statement(p); 
         if (stmt instanceof StatementNode) {
+            stmt.parent = p.program.block;
             stmts.push(stmt);
         // propagate result/error
         } else if (stmt instanceof TranspilingError) {
@@ -33,7 +38,7 @@ export const block = (p: ParsingContext): BlockNode | TranspilingError[] => {
         }
     }
     if (errors.length === 0) {
-        return new BlockNode(stmts[0].at, stmts[0].line, stmts);
+        return block
     }
     return errors;
 }
@@ -111,8 +116,10 @@ export const declaration = (p: ParsingContext): DeclarationNode | TranspilingErr
         return assignment;
     }
     
-    return new DeclarationNode(nodeStart, assignment.line, isMutable, isNewDeclaration, id, assignment);
-
+    let declaration = new DeclarationNode(nodeStart, assignment.line, isMutable, isNewDeclaration, id, assignment);
+    id.parent = declaration;
+    assignment.parent = declaration;
+    return declaration
 }
 
 export const expression = (p: ParsingContext): ExpressionNode | TranspilingError => {

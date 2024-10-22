@@ -5,6 +5,7 @@ export class BaseNode {
     kind: string
     at: number;
     line: number;
+    parent: BaseNode | null = null;
     constructor(kind: string, at: number, line: number) {
         this.kind = kind;
         this.at = at;
@@ -48,6 +49,7 @@ export class DeclarationNode extends StatementNode {
     isNewDeclaration: boolean;
     identifier: IdentifierNode;
     assignment: ExpressionNode | null;
+    symbols: Record<string, string> = {}; // name => type
     constructor(at: number, line: number, 
         isMutable: boolean, isNewDeclaration: boolean, identifier: IdentifierNode, assignment?: ExpressionNode,
     ) {

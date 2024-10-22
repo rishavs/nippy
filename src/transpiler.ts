@@ -56,6 +56,9 @@ export const transpileFile = async (filepath:string, src: string) => {
             if (["at", "line", "isMutable", "isNewDeclaration"].includes(key)) {
                 return `${key}: ${val}`;
             }
+            if (key == "parent") {
+                return "parent: " + (val && val.constructor.name ? val.constructor.name : "null");
+            }
         }).filter(Boolean);
 
         console.log(`${indent}${node.kind} ${node.value || ""} { ${keyValPairs.join(", ")} }`);
