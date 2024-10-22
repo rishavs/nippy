@@ -12,18 +12,17 @@ const genInt         = (g:CodegenContext, node: IntNode): string => {
 const genFloat       = (g:CodegenContext, node: FloatNode): string => node.value
 const genIdentifier  = (g:CodegenContext, node: IdentifierNode): string => node.value
 
-const genPrimary     = (g:CodegenContext, node: ExpressionNode): string => {
-    switch (node.kind) {
-        case "INT":
-            return genInt(g, node as IntNode);
-        case "FLOAT":
-            return genFloat(g, node as FloatNode);
-        case "IDENTIFIER":
-            return genIdentifier(g, node as IdentifierNode);
-        default:
-            throw new Error(`Unhandled Primary Node in Codegen: ${node.kind}`);
+const genPrimary = (g: CodegenContext, node: ExpressionNode): string => {
+    if (node instanceof IntNode) {
+        return genInt(g, node);
+    } else if (node instanceof FloatNode) {
+        return genFloat(g, node);
+    } else if (node instanceof IdentifierNode) {
+        return genIdentifier(g, node);
+    } else {
+        throw new Error(`Unhandled Primary Node in Codegen: ${node.constructor.name}`);
     }
-}
+};
 
 const genExpression  = (g:CodegenContext, node: ExpressionNode): string => {
     return genPrimary(g, node);
@@ -42,11 +41,11 @@ const genDeclaration = (g:CodegenContext, node: DeclarationNode): string => {
 }
 
 const genStatement   = (g:CodegenContext, node: StatementNode): string => {
-    switch (node.kind) {
-        case "DECLARATION":
-            return genDeclaration(g, node as DeclarationNode);
-        default:
-            throw new Error(`Unhandled Statement Node: ${node.kind}`);
+
+    if (node instanceof DeclarationNode) {
+        return genDeclaration(g, node);
+    } else {
+        throw new Error(`Unhandled Statement Node: ${node.constructor.name}`);
     }
 }
 
