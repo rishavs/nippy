@@ -4,12 +4,12 @@ import type { CodegenContext } from "./defs";
 
 const indent = (g: CodegenContext) => "    ".repeat(g.currentDepth + 1);
 
-const genInt         = (g:CodegenContext, node: IntNode): string => {
+const genInt = (g:CodegenContext, node: IntNode): string => {
     g.usesInt = true
     return node.value
 }
 
-const genFloat       = (g:CodegenContext, node: FloatNode): string => node.value
+const genFloat = (g:CodegenContext, node: FloatNode): string => node.value
 const genIdentifier  = (g:CodegenContext, node: IdentifierNode): string => node.value
 
 const genPrimary = (g: CodegenContext, node: ExpressionNode): string => {
@@ -24,7 +24,7 @@ const genPrimary = (g: CodegenContext, node: ExpressionNode): string => {
     }
 };
 
-const genExpression  = (g:CodegenContext, node: ExpressionNode): string => {
+const genExpression = (g:CodegenContext, node: ExpressionNode): string => {
     return genPrimary(g, node);
 }
 
@@ -40,8 +40,7 @@ const genDeclaration = (g:CodegenContext, node: DeclarationNode): string => {
     return code;
 }
 
-const genStatement   = (g:CodegenContext, node: StatementNode): string => {
-
+const genStatement = (g:CodegenContext, node: StatementNode): string => {
     if (node instanceof DeclarationNode) {
         return genDeclaration(g, node);
     } else {
@@ -49,7 +48,7 @@ const genStatement   = (g:CodegenContext, node: StatementNode): string => {
     }
 }
 
-const genBlock       = (g:CodegenContext, node: BlockNode): string => {
+const genBlock = (g:CodegenContext, node: BlockNode): string => {
     let code = "";
     for (let statement of node.statements) {
         code += indent(g) + genStatement(g, statement) + ";\n";
@@ -57,7 +56,7 @@ const genBlock       = (g:CodegenContext, node: BlockNode): string => {
     return code;
 }
 
-const genRoot        = (g:CodegenContext): string => {
+const genRoot = (g:CodegenContext): string => {
     return genBlock(g, g.program.block);
 }
 

@@ -1,4 +1,4 @@
-import { RootNode, walk } from "./ast";
+import { BlockNode, DeclarationNode, RootNode, walk } from "./ast";
 import { genCode } from "./codegen";
 import { CodegenContext, LexingContext, ParsingContext } from "./defs";
 import { lexFile } from "./lexer";
@@ -49,7 +49,33 @@ export const transpileFile = async (filepath:string, src: string) => {
     console.log(`------------- Parsing : ${parsingDuration}ms ---------------`);
     // console.log(JSON.stringify(p.program, null, 2));
 
-    // print using walker
+    // --------------------------------------
+    // Build symbols
+    // -------------------------------------- 
+    walk (p.program, 0, (node: any, depth: number) => {
+        if (node instanceof BlockNode) {
+            for (let statement of node.statements) {
+                if (statement instanceof DeclarationNode) {
+                    node.symbols[statement.identifier.value] = statement.isNewDeclaration ? "int" : "float";
+                } else {
+                    throw new Error(`Unhandled Statement Node: ${statement.constructor.name}`);
+                }
+            }
+        }
+    });
+
+
+    // --------------------------------------
+    // Analyze
+    // -------------------------------------- 
+
+
+
+
+
+    // --------------------------------------
+    // PrinT AST
+    // -------------------------------------- 
     walk(p.program, 0, (node: any, depth: number) => {
         let indent = "  ".repeat(depth); // Use depth for indentation
         let keyValPairs = Object.entries(node).map(([key, val]) => {
@@ -59,9 +85,13 @@ export const transpileFile = async (filepath:string, src: string) => {
             if (key == "parent") {
                 return "parent: " + (val && val.constructor.name ? val.constructor.name : "null");
             }
+            if (key == "symbols") {
+                return "symbols: " + JSON.stringify(val);
+            }
+
         }).filter(Boolean);
 
-        console.log(`${indent}${node.kind} ${node.value || ""} { ${keyValPairs.join(", ")} }`);
+        console.log(`${indent}${node.constructor.name} ${node.value || ""} ${keyValPairs.join(", ")}`);
     });
 
     // --------------------------------------

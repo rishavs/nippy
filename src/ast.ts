@@ -36,6 +36,7 @@ export class RootNode extends BaseNode {
 
 export class BlockNode extends BaseNode {
     statements: StatementNode[];
+    symbols: Record<string, string> = {}; // name => type
     constructor(at: number, line: number, statements: StatementNode[]) {
         super(at, line);
         this.statements = statements;
@@ -47,7 +48,6 @@ export class DeclarationNode extends StatementNode {
     isNewDeclaration: boolean;
     identifier: IdentifierNode;
     assignment: ExpressionNode | null;
-    symbols: Record<string, string> = {}; // name => type
     constructor(at: number, line: number, 
         isMutable: boolean, isNewDeclaration: boolean, identifier: IdentifierNode, assignment?: ExpressionNode,
     ) {
