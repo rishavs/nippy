@@ -77,35 +77,7 @@ export const transpileFile = async (filepath:string, src: string) => {
     // --------------------------------------
     // PrinT AST
     // -------------------------------------- 
-    walk(p.program, 0, (node: any, depth: number) => {
-        let indent = "  ".repeat(depth); // Use depth for indentation
-        let keyValPairs = Object.entries(node).map(([key, val]) => {
-            if (["at", "line", "isMutable", "isNewDeclaration"].includes(key)) {
-                return `${key}: ${val}`;
-            }
-            if (key == "parent") {
-                return "parent: " + (val && val.constructor.name ? val.constructor.name : "null");
-            }
-            if (key == "depth") {
-                return "depth: " + val;
-            }
-            if (key == "scopeOwner") {
-                return "scopeOwner: " + (val && val.constructor.name ? val.constructor.name : "null");
-            }
-            if (key == "scopeDepth") {
-                return "scopeDepth: " + val;
-            }
-            if (key == "symbols") {
-                return "symbols: " + JSON.stringify(val);
-            }
-
-        }).filter(Boolean);
-
-        console.log(`${indent}${node.constructor.name} ${node.value || ""} ${keyValPairs.join(", ")}`);
-    });
-
-
-    console.log("............................................");
+    console.log(`------- Printing AST : -------------`);
     let astprinter = new ASTPrinter();
     p.program.accept(astprinter);
     console.log("Nodes visited", astprinter.nodesVisited);
