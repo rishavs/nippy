@@ -4,6 +4,7 @@ import { CodegenContext, LexingContext, ParsingContext } from "./defs";
 import { lexFile } from "./lexer";
 import { parseFile } from "./parser";
 import { ASTPrinter } from "./walkers/printer";
+import { Symbolizer } from "./walkers/symbolizer";
 
 export const transpileFile = async (filepath:string, src: string) => {
     // On any error in a stage, recover and document all errors for that stage
@@ -53,18 +54,8 @@ export const transpileFile = async (filepath:string, src: string) => {
     // --------------------------------------
     // Build symbols
     // -------------------------------------- 
-    walk (p.program, 0, (node: any, depth: number) => {
-        if (node instanceof BlockNode) {
-            for (let statement of node.statements) {
-                if (statement instanceof DeclarationNode) {
-                    node.symbols[statement.identifier.value] = statement.isNewDeclaration ? "int" : "float";
-                } else {
-                    throw new Error(`Unhandled Statement Node: ${statement.constructor.name}`);
-                }
-            }
-        }
-    });
-
+    let symbolsBuilder = new Symbolizer();
+    p.program.accept(symbolsBuilder);
 
     // --------------------------------------
     // Analyze
