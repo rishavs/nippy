@@ -108,6 +108,7 @@ export const transpileFile = async (filepath:string, src: string) => {
     console.log("............................................");
     let astprinter = new ASTPrinter();
     p.program.accept(astprinter);
+    console.log("Nodes visited", astprinter.nodesVisited);
 
     // p.program.accept(printAST);
     

@@ -1,4 +1,4 @@
-import { ASTNode, BlockNode, DeclarationNode, FloatNode, IdentifierNode, IntNode } from "./ast";
+import { ASTNode, BlockNode, DeclarationNode, FloatNode, IdentifierNode, IntNode, RootNode } from "./ast";
 import type { ParsingContext } from "./defs"
 import { MissingSpecificTokenError, MissingSyntaxError, TranspilingError, UnhandledError } from "./errors";
 
@@ -25,8 +25,13 @@ export const block = (p: ParsingContext, parent: ASTNode): BlockNode | Transpili
     let block = new BlockNode(token.start, token.line);
     block.parent = parent;
     block.depth = parent.depth + 1;
-    block.scopeDepth = parent.scopeDepth
-    block.scopeOwner = parent.scopeOwner;
+    if (parent instanceof BlockNode) {
+        block.scopeOwner = parent;
+        block.scopeDepth = parent.scopeDepth + 1;
+    } else {
+        block.scopeOwner = parent.scopeOwner;
+        block.scopeDepth = parent.scopeDepth;
+    }
 
     while (p.i < p.tokens.length) {
         token = p.tokens[p.i];
@@ -82,9 +87,13 @@ export const declaration = (p: ParsingContext, parent:ASTNode): DeclarationNode 
 
     node.parent = parent;
     node.depth = parent.depth + 1;
-    node.scopeOwner = parent.scopeOwner;
-    node.scopeDepth = parent.scopeDepth;
-
+    if (parent instanceof BlockNode) {
+        node.scopeOwner = parent;
+        node.scopeDepth = parent.scopeDepth + 1;
+    } else {
+        node.scopeOwner = parent.scopeOwner;
+        node.scopeDepth = parent.scopeDepth;
+    }
 
     if (token.kind === 'let') {
         p.i++;    // consume 'let'
@@ -163,8 +172,13 @@ const int = (p: ParsingContext, parent: ASTNode): IntNode => {
     let node = new IntNode(token.start, token.line, token.value);
     node.parent = parent;
     node.depth = parent.depth + 1;
-    node.scopeOwner = parent.scopeOwner;
-    node.scopeDepth = parent.scopeDepth;
+    if (parent instanceof BlockNode) {
+        node.scopeOwner = parent;
+        node.scopeDepth = parent.scopeDepth + 1;
+    } else {
+        node.scopeOwner = parent.scopeOwner;
+        node.scopeDepth = parent.scopeDepth;
+    }
 
     return node;
 }
@@ -175,8 +189,13 @@ const float = (p: ParsingContext, parent: ASTNode): FloatNode => {
     let node = new FloatNode(token.start, token.line, token.value);
     node.parent = parent;
     node.depth = parent.depth + 1;
-    node.scopeOwner = parent.scopeOwner;
-    node.scopeDepth = parent.scopeDepth;
+    if (parent instanceof BlockNode) {
+        node.scopeOwner = parent;
+        node.scopeDepth = parent.scopeDepth + 1;
+    } else {
+        node.scopeOwner = parent.scopeOwner;
+        node.scopeDepth = parent.scopeDepth;
+    }
 
     return node;
 }
@@ -187,8 +206,13 @@ export const identifier = (p: ParsingContext, parent: ASTNode): IdentifierNode |
     let node = new IdentifierNode(token.start, token.line, token.value);
     node.parent = parent;
     node.depth = parent.depth + 1;
-    node.scopeOwner = parent.scopeOwner;
-    node.scopeDepth = parent.scopeDepth;
+    if (parent instanceof BlockNode) {
+        node.scopeOwner = parent;
+        node.scopeDepth = parent.scopeDepth + 1;
+    } else {
+        node.scopeOwner = parent.scopeOwner;
+        node.scopeDepth = parent.scopeDepth;
+    }
 
     return node;
 }
