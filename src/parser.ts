@@ -1,33 +1,39 @@
-import { BlockNode, DeclarationNode, ExpressionNode, FloatNode, IdentifierNode, IntNode, RootNode, StatementNode } from "./ast";
+import { ASTNode, BlockNode, DeclarationNode, FloatNode, IdentifierNode, IntNode } from "./ast";
 import type { ParsingContext } from "./defs"
 import { MissingSpecificTokenError, MissingSyntaxError, TranspilingError, UnhandledError } from "./errors";
 
 export const parseFile = (p: ParsingContext) => {
 
-    let bl = block(p);
+    let bl = block(p, p.program);
     if (bl instanceof BlockNode) {
-        bl.parent = p.program;
         p.program.block = bl;
+
+        bl.parent = p.program;
+        bl.depth = p.program.depth + 1;
+        bl.scopeOwner = null;
+        bl.scopeDepth = 0;
     } else {
         p.errors = bl;
     }
 }
 
-export const block = (p: ParsingContext): BlockNode | TranspilingError[] => {
+export const block = (p: ParsingContext, parent: ASTNode): BlockNode | TranspilingError[] => {
 
     let token = p.tokens[p.i];
-    let stmts: StatementNode[] = [];
     let errors: TranspilingError[] = [];
 
-    let block = new BlockNode(token.start, token.line, stmts);
+    let block = new BlockNode(token.start, token.line);
+    block.parent = parent;
+    block.depth = parent.depth + 1;
+    block.scopeDepth = parent.scopeDepth
+    block.scopeOwner = parent.scopeOwner;
 
     while (p.i < p.tokens.length) {
         token = p.tokens[p.i];
 
-        let stmt = statement(p); 
-        if (stmt instanceof StatementNode) {
-            stmt.parent = p.program.block;
-            stmts.push(stmt);
+        let stmt = statement(p, block); 
+        if (stmt instanceof ASTNode) {
+             block.statements.push(stmt);
         // propagate result/error
         } else if (stmt instanceof TranspilingError) {
             errors.push(stmt);
@@ -51,13 +57,13 @@ export const recover = (p: ParsingContext) => {
 }
 
 
-export const statement = (p: ParsingContext): StatementNode | TranspilingError  => {
+export const statement = (p: ParsingContext, parent: ASTNode): ASTNode | TranspilingError  => {
     if (p.tokens[p.i].kind == 'let') {
-        return declaration(p); // propagate result/error
+        return declaration(p, parent); // propagate result/error
 
     } else if (p.tokens[p.i].kind == 'ID') {
         if  (p.tokens[p.i] && p.tokens[p.i + 1].kind === '=') {
-            return declaration(p); // propagate result/error
+            return declaration(p, parent); // propagate result/error
         // } else if (p.tokens[p.i] && p.tokens[p.i + 1].kind === '(') {
             // function call
             // return functionCall(p); // propagate result/error
@@ -67,16 +73,22 @@ export const statement = (p: ParsingContext): StatementNode | TranspilingError  
     return new MissingSyntaxError('Statement', p.filepath, p.tokens[p.i].start, p.tokens[p.i].line, p.tokens[p.i].value);
 }
 
-export const declaration = (p: ParsingContext): DeclarationNode | TranspilingError => {
-    let isNewDeclaration = false;
-    let isMutable = false;
-
-    let nodeStart = p.tokens[p.i].start;
+export const declaration = (p: ParsingContext, parent:ASTNode): DeclarationNode | TranspilingError => {
     let token = p.tokens[p.i];
+
+    let node = new DeclarationNode(token.start, token.line);
+    node.isMutable = false;
+    node.isNewDeclaration = false;
+
+    node.parent = parent;
+    node.depth = parent.depth + 1;
+    node.scopeOwner = parent.scopeOwner;
+    node.scopeDepth = parent.scopeDepth;
+
 
     if (token.kind === 'let') {
         p.i++;    // consume 'let'
-        isNewDeclaration = true;
+        node.isNewDeclaration = true;
         if (! p.tokens[p.i] ) {
             return new MissingSyntaxError('Identifier', p.filepath, token.start, token.line);
         }
@@ -84,7 +96,7 @@ export const declaration = (p: ParsingContext): DeclarationNode | TranspilingErr
 
         if (token && token.kind === 'var') {
             p.i++;    // consume 'var'
-            isMutable = true;
+            node.isMutable = true;
         }
     }
 
@@ -93,10 +105,12 @@ export const declaration = (p: ParsingContext): DeclarationNode | TranspilingErr
     }
     token = p.tokens[p.i];
 
-    let id = identifier(p); // propagate result/error
+    let id = identifier(p, node); // propagate result/error
     if (id instanceof TranspilingError) {
         return id;
     }
+    node.identifier = id;
+
     if (! p.tokens[p.i] ) {
         return new MissingSpecificTokenError('Variable Declaration', "'='", p.filepath, id.at, id.line);
     }
@@ -111,53 +125,70 @@ export const declaration = (p: ParsingContext): DeclarationNode | TranspilingErr
         return new MissingSyntaxError('Expression', p.filepath, p.tokens[p.i - 1].start, p.tokens[p.i - 1].line);
     }
 
-    let assignment = expression(p); // propagate result/error
+    let assignment = expression(p, node); // propagate result/error
     if (assignment instanceof TranspilingError) {
         return assignment;
     }
-    
-    let declaration = new DeclarationNode(nodeStart, assignment.line, isMutable, isNewDeclaration, id, assignment);
-    id.parent = declaration;
-    assignment.parent = declaration;
-    return declaration
+
+    node.assignment = assignment;
+   
+    return node
 }
 
-export const expression = (p: ParsingContext): ExpressionNode | TranspilingError => {
-    return primary(p);
+export const expression = (p: ParsingContext, parent: ASTNode): ASTNode | TranspilingError => {
+    return primary(p, parent);
 }
 
-const primary = (p: ParsingContext): ExpressionNode | TranspilingError => {
+const primary = (p: ParsingContext, parent: ASTNode): ASTNode | TranspilingError => {
 
     switch (p.tokens[p.i].kind) {
         case 'INT':
-            return int(p); // propagate result/error
+            return int(p, parent); // propagate result/error
 
         case 'FLOAT':
-            return float(p); // propagate result/error
+            return float(p, parent); // propagate result/error
 
         // TODO - separate identifier from function call
         case 'ID':
-            return identifier(p); // propagate result/error
+            return identifier(p, parent); // propagate result/error
 
         default:
             return new MissingSyntaxError('Expression', p.filepath, p.tokens[p.i].start, p.tokens[p.i].line, p.tokens[p.i].value);
     }
 }
 
-const int = (p: ParsingContext): IntNode => {
+const int = (p: ParsingContext, parent: ASTNode): IntNode => {
     let token = p.tokens[p.i];
     p.i++; // consume the number
-    return new IntNode(token.start, token.line, token.value);
+    let node = new IntNode(token.start, token.line, token.value);
+    node.parent = parent;
+    node.depth = parent.depth + 1;
+    node.scopeOwner = parent.scopeOwner;
+    node.scopeDepth = parent.scopeDepth;
+
+    return node;
 }
 
-const float = (p: ParsingContext): FloatNode => {
+const float = (p: ParsingContext, parent: ASTNode): FloatNode => {
     let token = p.tokens[p.i];
     p.i++; // consume the number
-    return new FloatNode(token.start, token.line, token.value);
+    let node = new FloatNode(token.start, token.line, token.value);
+    node.parent = parent;
+    node.depth = parent.depth + 1;
+    node.scopeOwner = parent.scopeOwner;
+    node.scopeDepth = parent.scopeDepth;
+
+    return node;
 }
 
-export const identifier = (p: ParsingContext): IdentifierNode | TranspilingError => {
+export const identifier = (p: ParsingContext, parent: ASTNode): IdentifierNode | TranspilingError => {
     let token = p.tokens[p.i];
     p.i++; // consume the number
-    return new IdentifierNode(token.start, token.line, token.value);
+    let node = new IdentifierNode(token.start, token.line, token.value);
+    node.parent = parent;
+    node.depth = parent.depth + 1;
+    node.scopeOwner = parent.scopeOwner;
+    node.scopeDepth = parent.scopeDepth;
+
+    return node;
 }

@@ -1,95 +1,115 @@
 // ---------------------------
-// Special nodes
+// Abstract nodes
+
+import type { Block } from "typescript";
+
 // ---------------------------
-export class BaseNode {
+export abstract class ASTNode {
     at: number;
     line: number;
-    parent: BaseNode | null = null;
+
+    parent: ASTNode | null = null;              // immediate parent
+    depth: number = 0;                          // distance from root
+    scopeDepth: number = 0;                     // distance from root in terms of scope
+    scopeOwner: BlockNode | null = null;        // the block that owns the scope of this node
+
     constructor(at: number, line: number) {
         this.at = at;
         this.line = line;
     }
-}
 
-export class StatementNode extends BaseNode {
-    constructor(at: number, line: number) {
-        super(at, line);
-    }
-}
-
-export class ExpressionNode extends BaseNode {
-    constructor(at: number, line: number) {
-        super(at, line);
-    }
+    accept(v: Visitor) {}
 }
 
 // ---------------------------
 // Statements
 // ---------------------------
-export class RootNode extends BaseNode {
-    block: BlockNode;
-    constructor(at: number, line: number, block: BlockNode) {
+export class RootNode extends ASTNode {
+    block!: BlockNode;
+    constructor(at: number, line: number) {
         super(at, line);
-        this.block = block;
+    }
+
+    accept(v: Visitor) {
+        v.visit(this);
+        this.block.accept(v);
     }
 }
 
-export class BlockNode extends BaseNode {
-    statements: StatementNode[];
-    symbols: Record<string, string> = {}; // name => type
-    constructor(at: number, line: number, statements: StatementNode[]) {
+export class BlockNode extends ASTNode {
+    statements  : ASTNode[] = []
+    symbols     : Record<string, string> = {}; // name => type
+    constructor(at: number, line: number) {
         super(at, line);
-        this.statements = statements;
+    }
+
+    accept(v: Visitor) {
+        v.visit(this);
+        this.statements.forEach((stmt) => stmt.accept(v));
     }
 }
 
-export class DeclarationNode extends StatementNode {
-    isMutable: boolean;
-    isNewDeclaration: boolean;
-    identifier: IdentifierNode;
-    assignment: ExpressionNode | null;
-    constructor(at: number, line: number, 
-        isMutable: boolean, isNewDeclaration: boolean, identifier: IdentifierNode, assignment?: ExpressionNode,
-    ) {
+export class DeclarationNode extends ASTNode {
+    isMutable!: boolean;
+    isNewDeclaration!: boolean;
+    identifier!: IdentifierNode;
+    assignment!: ASTNode | null;
+    constructor(at: number, line: number) {
         super(at, line);
-        this.isMutable = isMutable;
-        this.isNewDeclaration = isNewDeclaration;
-        this.identifier = identifier;
-        this.assignment = assignment || null;
+    }
+
+    accept(v: Visitor) {
+        v.visit(this);
+        this.identifier.accept(v);
+        if (this.assignment) {
+            this.assignment.accept(v);  
+        }
     }
 }
 
 // ---------------------------
 // Expressions
 // ---------------------------
-export class IdentifierNode extends ExpressionNode {
+export class IdentifierNode extends ASTNode {
     value: string;
     constructor(at: number, line: number, value: string) {
         super(at, line);
         this.value = value;
     }
+
+    accept(v: Visitor) {
+        v.visit(this);
+    }
 }
 
-export class IntNode extends ExpressionNode {
+export class IntNode extends ASTNode {
     value: string;
     constructor(at: number, line: number, value: string) {
         super(at, line);
         this.value = value;
     }
+
+    accept(v: Visitor) {
+        v.visit(this);
+    }
 }
 
-export class FloatNode extends ExpressionNode {
+export class FloatNode extends ASTNode {
     value: string;
     constructor(at: number, line: number, value: string) {
         super(at, line);
         this.value = value;
+    }
+
+    accept(v: Visitor) {
+        v.visit(this);
     }
 }
 
 // ---------------------------
 // Walker
 // ---------------------------
-export const walk = (node: BaseNode, depth:number, fn: Function) => {
+export const walk = (node: ASTNode, depth:number, fn: Function) => {
     fn(node, depth);
     if (node instanceof RootNode) {
         walk(node.block, depth + 1, fn);
@@ -101,4 +121,8 @@ export const walk = (node: BaseNode, depth:number, fn: Function) => {
             walk(node.assignment, depth + 1, fn);
         }
     } 
+}
+
+export abstract class Visitor {
+    visit(node: ASTNode) {}
 }

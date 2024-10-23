@@ -1,6 +1,6 @@
-import { BlockNode, DeclarationNode, type BaseNode } from "./ast";
+import { BlockNode, DeclarationNode, ASTNode } from "./ast";
 
-export const buildSymbols = (node: BaseNode) => {
+export const buildSymbols = (node: ASTNode) => {
     if (node instanceof BlockNode) {
         for (let statement of node.statements) {
             if (statement instanceof DeclarationNode) {

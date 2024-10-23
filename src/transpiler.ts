@@ -1,8 +1,9 @@
-import { BlockNode, DeclarationNode, RootNode, walk } from "./ast";
+import { ASTNode, BlockNode, DeclarationNode, FloatNode, IdentifierNode, IntNode, RootNode, Visitor, walk } from "./ast";
 import { genCode } from "./codegen";
 import { CodegenContext, LexingContext, ParsingContext } from "./defs";
 import { lexFile } from "./lexer";
 import { parseFile } from "./parser";
+import { ASTPrinter } from "./walkers/printer";
 
 export const transpileFile = async (filepath:string, src: string) => {
     // On any error in a stage, recover and document all errors for that stage
@@ -85,6 +86,15 @@ export const transpileFile = async (filepath:string, src: string) => {
             if (key == "parent") {
                 return "parent: " + (val && val.constructor.name ? val.constructor.name : "null");
             }
+            if (key == "depth") {
+                return "depth: " + val;
+            }
+            if (key == "scopeOwner") {
+                return "scopeOwner: " + (val && val.constructor.name ? val.constructor.name : "null");
+            }
+            if (key == "scopeDepth") {
+                return "scopeDepth: " + val;
+            }
             if (key == "symbols") {
                 return "symbols: " + JSON.stringify(val);
             }
@@ -93,6 +103,14 @@ export const transpileFile = async (filepath:string, src: string) => {
 
         console.log(`${indent}${node.constructor.name} ${node.value || ""} ${keyValPairs.join(", ")}`);
     });
+
+
+    console.log("............................................");
+    let astprinter = new ASTPrinter();
+    p.program.accept(astprinter);
+
+    // p.program.accept(printAST);
+    
 
     // --------------------------------------
     // code generation

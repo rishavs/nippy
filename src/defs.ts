@@ -48,8 +48,7 @@ export class ParsingContext {
         this.tokens = tokens;
         this.i = 0;
 
-        let block = new BlockNode(0, 0, []);
-        this. program = new RootNode(0, 0, block);
+        this. program = new RootNode(0, 0);
     }
 }
 

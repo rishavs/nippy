@@ -1,4 +1,4 @@
-import { BlockNode, DeclarationNode, ExpressionNode, FloatNode, IdentifierNode, IntNode, RootNode, StatementNode, walk } from "./ast";
+import { ASTNode, BlockNode, DeclarationNode, FloatNode, IdentifierNode, IntNode } from "./ast";
 import type { CodegenContext } from "./defs";
 
 
@@ -12,7 +12,7 @@ const genInt = (g:CodegenContext, node: IntNode): string => {
 const genFloat = (g:CodegenContext, node: FloatNode): string => node.value
 const genIdentifier  = (g:CodegenContext, node: IdentifierNode): string => node.value
 
-const genPrimary = (g: CodegenContext, node: ExpressionNode): string => {
+const genPrimary = (g: CodegenContext, node: ASTNode): string => {
     if (node instanceof IntNode) {
         return genInt(g, node);
     } else if (node instanceof FloatNode) {
@@ -24,7 +24,7 @@ const genPrimary = (g: CodegenContext, node: ExpressionNode): string => {
     }
 };
 
-const genExpression = (g:CodegenContext, node: ExpressionNode): string => {
+const genExpression = (g:CodegenContext, node: ASTNode): string => {
     return genPrimary(g, node);
 }
 
@@ -40,7 +40,7 @@ const genDeclaration = (g:CodegenContext, node: DeclarationNode): string => {
     return code;
 }
 
-const genStatement = (g:CodegenContext, node: StatementNode): string => {
+const genStatement = (g:CodegenContext, node: ASTNode): string => {
     if (node instanceof DeclarationNode) {
         return genDeclaration(g, node);
     } else {
