@@ -3,6 +3,7 @@ import { genCode } from "./codegen";
 import { CodegenContext, LexingContext, ParsingContext } from "./defs";
 import { lexFile } from "./lexer";
 import { parseFile } from "./parser";
+import { CodeGenerator } from "./walkers/generator";
 import { ASTPrinter } from "./walkers/printer";
 import { Symbolizer } from "./walkers/symbolizer";
 
@@ -85,6 +86,12 @@ export const transpileFile = async (filepath:string, src: string) => {
     console.log(`------- Generating Code : ${codegenDuration}ms -------------`);
     console.log(g.cFileCode)
     // Any failure in codegen is fatal
+
+    // alternate codegen using visitor
+    // console.log(`------- Generating Code using visitor : -------------`);
+    // let codeGenerator = new CodeGenerator();
+    // p.program.accept(codeGenerator);
+    // console.log(codeGenerator.code);
 
     return transpilingResult;
 }

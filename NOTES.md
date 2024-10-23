@@ -1,4 +1,7 @@
+Pass a single errors list to all stages, including the visitors
 Move to the visitor pattern and redo the codegen using this
+
+
 
 // Add parentScope to block node. Add currentScope to context for easy parenting. Use this to copy parent symbols to current symbols
 
