@@ -1,0 +1,258 @@
+# Luau-Specific Compiler Checks and Errors
+(Only listing items not present in Crystal or Golang compiler checks)
+
+## Type Refinements
+
+### Type Narrowing
+- Type narrowing through truthiness checks
+- Type narrowing through length checks
+- Type narrowing through equality checks
+- Non-nil assertions refinement
+- Type narrowing through numeric comparisons
+- Type predicate refinements
+
+### Union Type Handling
+- Discriminated union exhaustiveness
+- Union type with singleton types
+- Union reduction through assignments
+- Union type inference in loops
+- Missing cases in union type switches
+
+## Roblox-Specific Checks
+
+### Instance Hierarchy
+- Invalid parent/child relationship
+- Invalid service reference
+- Missing instance property
+- Invalid instance property type
+- Improper instance destruction order
+
+### DataModel Access
+- Invalid game service access
+- Missing service dependency
+- Invalid replication settings
+- Invalid remote event/function usage
+- Cross-server boundary violations
+
+## Script Security
+
+### Sandboxing
+- Environment isolation violation
+- Invalid environment access
+- Protected function call
+- Restricted API access
+- Security context violation
+
+### Yield Safety
+- Invalid yield in callback
+- Yield in protected context
+- Asynchronous yield timing
+- Cross-context yield
+- Yield in critical section
+
+## Performance Analysis
+
+### Script Performance
+- Excessive table iteration
+- String concatenation in loop
+- Table rehashing detection
+- Memory pattern analysis
+- Computation complexity warning
+
+### Memory Usage
+- Table preallocation hints
+- String interning suggestions
+- Closure environment size
+- Upvalue chain length
+- Table density analysis
+
+## Luau-Specific Language Features
+
+### String Interpolation
+- Invalid interpolation syntax
+- Type mismatch in interpolation
+- Missing interpolation close
+- Nested interpolation depth
+- Invalid expression in interpolation
+
+### Destructuring
+- Partial destructuring patterns
+- Rest pattern positioning
+- Invalid binding pattern
+- Mixed numbered/named destructuring
+- Optional destructuring chains
+
+### Properties
+- Property accessor optimization
+- Property setter validation
+- Computed property name
+- Property observation
+- Property dependency cycle
+
+## Roblox Studio Integration
+
+### Script Behavior
+- Invalid script execution order
+- Script loading dependency
+- Invalid module caching
+- Script lifetime management
+- Context switching validity
+
+### Tool Integration
+- Invalid plugin interaction
+- Studio API misuse
+- Invalid tool state
+- Command bar integration
+- Studio service interaction
+
+## Game-Specific Optimizations
+
+### Network Optimization
+- Replication overhead warning
+- Network boundary crossing
+- Remote call batching
+- Network payload size
+- Replication frequency
+
+### Physics Interaction
+- Invalid physical property
+- Physics simulation warning
+- Collision group validity
+- Physics throttling warning
+- Physical constraint check
+
+## Luau Standard Library
+
+### Math Library
+- Vector/matrix operation validity
+- Quaternion normalization
+- Mathematical domain error
+- Numerical precision warning
+- Mathematical stability check
+
+### Table Library
+- Table manipulation safety
+- Table iteration patterns
+- Table modification during iteration
+- Table compression hints
+- Table sorting stability
+
+## Type System Extensions
+
+### Type Packs
+- Invalid type pack expansion
+- Type pack length mismatch
+- Variadic type pack usage
+- Type pack inference failure
+- Type pack concatenation
+
+### Generic Type Constraints
+- Generic type parameter bounds
+- Generic type pack constraints
+- Generic variance rules
+- Generic specialization
+- Generic type inference limits
+
+## Roblox Events
+
+### Event Handling
+- Invalid event connection
+- Event handler lifetime
+- Event cycle detection
+- Event handler performance
+- Event queue overflow
+
+### Signal Processing
+- Signal connection safety
+- Signal disconnection timing
+- Signal handler scope
+- Signal processing order
+- Signal cleanup validation
+
+## Instance-Specific
+
+### Instance Creation
+- Invalid instance hierarchy
+- Instance naming conflicts
+- Instance property initialization
+- Instance cleanup handling
+- Instance reference validity
+
+### Instance Properties
+- Property type coercion
+- Property change monitoring
+- Property replication rules
+- Property dependency chain
+- Property update batching
+
+## Script Lifetime
+
+### Script States
+- Invalid state transition
+- State cleanup handling
+- State restoration validity
+- State synchronization
+- State persistence check
+
+### Script Dependencies
+- Circular module dependency
+- Module initialization order
+- Module cleanup sequence
+- Module hot-reloading
+- Module version compatibility
+
+## Roblox-Specific Types
+
+### DataTypes
+- CFrame manipulation check
+- Vector3 operation validity
+- Color3 range validation
+- UDim2 calculation check
+- Instance reference type
+
+### Custom Types
+- Custom property validation
+- User type definition check
+- Type attribute validation
+- Type metadata consistency
+- Type version compatibility
+
+## Testing Features
+
+### Testing Framework
+- Test dependency order
+- Test isolation violation
+- Test cleanup validation
+- Test coverage analysis
+- Test performance metrics
+
+### Mock Objects
+- Mock creation validity
+- Mock behavior verification
+- Mock state restoration
+- Mock interaction tracking
+- Mock cleanup validation
+
+## Debug Features
+
+### Debug Information
+- Debug tag validation
+- Debug visualization check
+- Debug state consistency
+- Debug output format
+- Debug context switch
+
+### Profiling
+- Profile sampling validity
+- Profile data aggregation
+- Profile marker placement
+- Profile threshold check
+- Profile memory tracking
+
+Note: This list focuses specifically on Luau and Roblox-platform specific checks that weren't covered in the Crystal or Golang lists. The checks may vary based on:
+- Luau version
+- Roblox platform version
+- Studio settings
+- Security context
+- Performance settings
+- Debug/release mode

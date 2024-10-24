@@ -44,4 +44,6 @@ export class ASTPrinter extends Visitor {
         console.log(`${this.indent(node)}${node.constructor.name} ${(node as any).value ? (node as any).value : ""} ${keyValPairs.join(", ")}`);
 
     }
+
+    leave (node: ASTNode) {}
 }

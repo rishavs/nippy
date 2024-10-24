@@ -22,4 +22,7 @@ export class Symbolizer extends Visitor {
             }
         }
     }
+
+    leave (node: ASTNode) {}
+
 }

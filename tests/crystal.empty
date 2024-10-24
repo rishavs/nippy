@@ -1,0 +1,252 @@
+# Golang-Specific Compiler Checks and Errors
+(Only listing items not present in the Crystal compiler checks list)
+
+## Interface Checks
+
+### Interface Implementation
+- Interface method has a pointer receiver but type doesn't
+- Non-exported method prevents interface satisfaction
+- Missing method promotes through embedded interface
+- Interface embedding creates impossible requirements
+- Circular interface embedding
+- Empty interface conversion restrictions
+- Interface method signature varies by a single result
+
+### Interface Type Assertions
+- Type assertion on non-interface type
+- Invalid type switch case ordering
+- Duplicate type switch case
+- Unreachable type switch case
+- Missing type in type switch
+
+## Go-Specific Language Features
+
+### Goroutines
+- Invalid goroutine launch expression
+- Goroutine on method with pointer receiver
+- Goroutine leak detection
+- Invalid goroutine synchronization
+- Goroutine on nil function pointer
+
+### Defer
+- Defer of built-in function
+- Defer in infinite loop
+- Defer after return
+- Invalid defer expression
+- Resource leak in deferred function
+- Nested defer ordering issues
+
+### Select
+- Empty select statement
+- Unreachable select case
+- Select case on closed channel
+- Select case on nil channel
+- Duplicate select case
+- Invalid select default placement
+
+### Make and New
+- Invalid make length/capacity
+- Negative slice capacity
+- Make of non-composite type
+- New of interface type
+- Invalid slice/map/channel initialization
+
+## Package System
+
+### Package Management
+- Package import cycle includes vendored package
+- Invalid package path in GOPATH
+- Package name doesn't match directory
+- Multiple packages in single directory
+- Invalid package documentation
+
+### Init Functions
+- Init function with parameters
+- Init function with return values
+- Init function in wrong package
+- Invalid init function naming
+- Init function ordering issues
+
+## Go-Specific Type System
+
+### Type Definitions
+- Type definition creates identical type
+- Invalid method set of defined type
+- Method redeclaration through type definition
+- Type definition creates recursive type
+- Invalid type alias declaration
+
+### Struct Tags
+- Invalid struct tag syntax
+- Unknown struct tag key
+- Duplicate struct tag
+- Invalid JSON/encoding tag
+- Mismatched struct tag types
+
+## Slice and Array Specific
+
+### Slice Operations
+- Invalid slice three-index operation
+- Slice bounds out of range at compile-time
+- Invalid slice capacity extension
+- Slice of unaddressable array
+- Invalid slice append operation
+
+### Array Checks
+- Array size overflow
+- Invalid array composite literal
+- Array size determined by untyped constant
+- Array size exceeds platform limits
+- Invalid array element assignment
+
+## Map Specific
+
+### Map Operations
+- Invalid map key type
+- Map key does not support comparison
+- Invalid map deletion
+- Map iteration variable scope
+- Concurrent map operations
+
+## String Specific
+
+### String Operations
+- Invalid string index operation
+- Invalid string concatenation
+- String conversion loses information
+- Invalid UTF-8 in string literal
+- Raw string delimiter restrictions
+
+## Constants
+
+### Constant Expressions
+- Constant division by zero at compile time
+- Constant overflow in expression
+- Invalid constant type conversion
+- Constant expression exceeds implementation limit
+- Invalid iota usage
+
+### Enumeration
+- Invalid iota increment
+- Iota usage outside constant declaration
+- Invalid enumeration pattern
+- Missing enumeration value
+- Duplicate enumeration value
+
+## Go Assembly
+
+### Assembly Constraints
+- Invalid Go assembly directive
+- Missing assembly function declaration
+- Invalid register allocation
+- Invalid assembly instruction
+- Platform-specific assembly restrictions
+
+## Build Constraints
+
+### Build Tags
+- Invalid build tag syntax
+- Conflicting build constraints
+- Unknown build tag
+- Invalid build tag combination
+- Platform-specific build tag issues
+
+## Go Modules
+
+### Module Checks
+- Invalid module path
+- Invalid version in go.mod
+- Conflicting module requirements
+- Invalid replace directive
+- Invalid exclude directive
+- Module cycle detection
+
+## Compiler Directives
+
+### Pragma Directives
+- Invalid //go: directive
+- Unknown compiler directive
+- Misplaced compiler directive
+- Conflicting compiler directives
+- Invalid nosplit pragma
+
+## Platform-Specific
+
+### Architecture Specific
+- Invalid memory alignment for architecture
+- Architecture-specific type sizes
+- Invalid atomic operation for architecture
+- Platform-specific calling convention
+- Architecture-specific register constraints
+
+### Operating System Specific
+- System call number validation
+- OS-specific type restrictions
+- Invalid syscall argument
+- OS-specific feature availability
+- Platform-specific API usage
+
+## Race Detector
+
+### Race Conditions
+- Read-write race on global variable
+- Race on loop counter
+- Race in map access
+- Race in slice access
+- Channel send/receive race
+
+## Escape Analysis
+
+### Memory Allocation
+- Stack vs heap allocation decision
+- Escape analysis limitations
+- Invalid pointer escape
+- Interface value escape
+- Closure variable escape
+
+## Inline Checks
+
+### Function Inlining
+- Function too complex to inline
+- Recursive function inlining
+- Cross-package inlining restrictions
+- Method inlining constraints
+- Inline budget exceeded
+
+## Specialized Error Categories
+
+### Embedding
+- Invalid embedding of pointer type
+- Embedded field conflicts
+- Promotion through embedding chains
+- Invalid method promotion
+- Embedding causes ambiguous selector
+
+### Context Usage
+- Invalid context usage
+- Context passed after deadline
+- Context method ordering
+- Missing context parameter
+- Invalid context key type
+
+### Type Parameters (Go 1.18+)
+- Invalid type parameter constraints
+- Type parameter inference failure
+- Invalid type set operation
+- Constraint satisfaction check
+- Type parameter ordering requirements
+
+### Reflection
+- Invalid reflection type assertion
+- Reflection on unexported field
+- Invalid reflection value creation
+- Reflection method call restrictions
+- Invalid reflection type conversion
+
+Note: This list focuses on Golang-specific checks that are distinct from the Crystal compiler checks. Some checks might vary based on:
+- Go version
+- Build tags
+- Compiler flags
+- Platform/architecture
+- Race detector usage
+- Analysis tools configuration

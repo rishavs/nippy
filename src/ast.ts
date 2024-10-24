@@ -33,6 +33,7 @@ export class RootNode extends ASTNode {
     accept(v: Visitor) {
         v.visit(this);
         this.block.accept(v);
+        v.leave(this);
     }
 }
 
@@ -46,6 +47,7 @@ export class BlockNode extends ASTNode {
     accept(v: Visitor) {
         v.visit(this);
         this.statements.forEach((stmt) => stmt.accept(v));
+        v.leave(this);
     }
 }
 
@@ -64,6 +66,7 @@ export class DeclarationNode extends ASTNode {
         if (this.assignment) {
             this.assignment.accept(v);  
         }
+        v.leave(this);
     }
 }
 
@@ -79,6 +82,7 @@ export class IdentifierNode extends ASTNode {
 
     accept(v: Visitor) {
         v.visit(this);
+        v.leave(this);
     }
 }
 
@@ -91,6 +95,7 @@ export class IntNode extends ASTNode {
 
     accept(v: Visitor) {
         v.visit(this);
+        v.leave(this);
     }
 }
 
@@ -103,26 +108,14 @@ export class FloatNode extends ASTNode {
 
     accept(v: Visitor) {
         v.visit(this);
+        v.leave(this);
     }
 }
 
 // ---------------------------
-// Walker
+// Visitor
 // ---------------------------
-export const walk = (node: ASTNode, depth:number, fn: Function) => {
-    fn(node, depth);
-    if (node instanceof RootNode) {
-        walk(node.block, depth + 1, fn);
-    } else if (node instanceof BlockNode) {
-        node.statements.forEach((stmt) => walk(stmt, depth + 1, fn));
-    } else if (node instanceof DeclarationNode) {
-        walk(node.identifier, depth + 1, fn);
-        if (node.assignment) {
-            walk(node.assignment, depth + 1, fn);
-        }
-    } 
-}
-
 export abstract class Visitor {
     visit(node: ASTNode) {}
+    leave(node: ASTNode) {}
 }

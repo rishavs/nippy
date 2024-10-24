@@ -1,4 +1,3 @@
-import { ASTNode, BlockNode, DeclarationNode, FloatNode, IdentifierNode, IntNode, RootNode, Visitor, walk } from "./ast";
 import { genCode } from "./codegen";
 import { CodegenContext, LexingContext, ParsingContext } from "./defs";
 import { lexFile } from "./lexer";
@@ -88,10 +87,10 @@ export const transpileFile = async (filepath:string, src: string) => {
     // Any failure in codegen is fatal
 
     // alternate codegen using visitor
-    // console.log(`------- Generating Code using visitor : -------------`);
-    // let codeGenerator = new CodeGenerator();
-    // p.program.accept(codeGenerator);
-    // console.log(codeGenerator.code);
+    console.log(`------- Generating Code using visitor : -------------`);
+    let codeGenerator = new CodeGenerator();
+    p.program.accept(codeGenerator);
+    console.log(codeGenerator.code);
 
     return transpilingResult;
 }

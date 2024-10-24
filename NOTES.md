@@ -1,3 +1,5 @@
+Add a Leave method to visitor. in ast nodes, every time the node is done, call leave.
+
 Pass a single errors list to all stages, including the visitors
 Move to the visitor pattern and redo the codegen using this
 
@@ -11,6 +13,7 @@ Move to the visitor pattern and redo the codegen using this
 [] variable has not been declred and cannot be assigned
 [] variable is defined as const and cannot be reassigned
 
+Create negative test cases for all compiler checks and errors
 
 [] CLosures - iterate over parent's symbols table and then own table. where a symbol is created, only go up to that level
 

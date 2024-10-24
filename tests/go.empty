@@ -1,0 +1,315 @@
+# Crystal Compiler Checks and Error Types
+
+## Syntax Errors
+
+### Basic Syntax
+- Unterminated string literal
+- Unterminated character literal
+- Unterminated regular expression
+- Unterminated command
+- Unterminated parenthesis/bracket/brace
+- Invalid escape sequence in string
+- Invalid character in source file
+- Invalid numeric literal
+- Invalid character literal
+- Invalid operator
+- Invalid method name
+- Invalid constant name
+- Invalid type name
+
+### Control Flow
+- `break`/`next`/`return` outside of loop/block
+- Multiple assignment count mismatch
+- Invalid assignment target
+- Invalid yield argument count
+- Invalid block parameter count
+- Unexpected token/keyword
+
+## Type Checks
+
+### Type Resolution
+- Undefined constant
+- Undefined type
+- Undefined class
+- Undefined module
+- Type does not exist
+- Abstract class instantiation
+- Cannot instantiate union type
+- Cannot instantiate generic type without type arguments
+
+### Type Inference
+- Unable to infer generic type parameter
+- Cannot determine type of variable
+- Ambiguous type
+- Type restriction not satisfied
+- Generic type argument count mismatch
+
+### Type Compatibility
+- Type mismatch in assignment
+- Type mismatch in method argument
+- Type mismatch in block parameter
+- Type mismatch in return value
+- No overload matches arguments
+- No method matches receiver
+- Incompatible type restrictions
+- Invalid type cast
+- Invalid type conversion
+- Incompatible union types
+
+## Name Resolution
+
+### Variable Scoping
+- Undefined local variable
+- Undefined instance variable
+- Undefined class variable
+- Variable already defined
+- Variable shadows existing definition
+- Local variable initialized in conditional
+- Instance variable not initialized
+- Closure variable conflicts with local
+
+### Method Resolution
+- Method not found
+- Private method called from outside
+- Protected method called from outside
+- Abstract method not implemented
+- Method already defined
+- Method name conflicts with macro
+- Invalid method override
+- Method visibility changed in override
+- Method arguments changed in override
+
+### Constant Resolution
+- Constant already defined
+- Invalid constant redefinition
+- Constant used before definition
+- Circular constant dependency
+
+## Semantic Checks
+
+### Method Usage
+- Wrong number of arguments
+- Missing required argument
+- Unknown named argument
+- Duplicate named argument
+- Invalid splat argument
+- Invalid block argument
+- Invalid default argument
+- Missing block argument
+- Unexpected block argument
+- Invalid receiver for method
+
+### Class Structure
+- Circular class inheritance
+- Multiple inheritance not allowed
+- Invalid superclass
+- Abstract method in concrete class
+- Concrete method in abstract class
+- Module included multiple times
+- Invalid include/extend target
+- Invalid class reopening
+
+### Generic Types
+- Invalid type parameter
+- Type parameter already defined
+- Type parameter conflicts with existing type
+- Invalid type restriction
+- Invalid variance annotation
+- Generic type arguments not specified
+- Too many/few type arguments
+
+### Macros
+- Invalid macro name
+- Macro already defined
+- Invalid macro argument
+- Invalid macro expansion
+- Recursive macro expansion
+- Invalid macro splat
+- Invalid macro expression
+- Invalid macro type annotation
+
+## Memory Safety
+
+### Pointers
+- Invalid pointer arithmetic
+- Invalid pointer cast
+- Null pointer dereference
+- Invalid pointer assignment
+- Pointer type mismatch
+- Stack pointer escape
+- Invalid pointer comparison
+
+### Reference Counting
+- Invalid reference counting
+- Memory leak detected
+- Double free detected
+- Use after free detected
+- Invalid reference cycle
+
+### Stack Safety
+- Stack overflow possible
+- Invalid stack variable reference
+- Stack variable escape
+- Invalid stack allocation
+
+## Concurrency
+
+### Fibers
+- Invalid fiber usage
+- Fiber already running
+- Fiber not started
+- Invalid fiber context switch
+- Invalid fiber termination
+
+### Channels
+- Channel closed while sending
+- Send on closed channel
+- Receive from closed channel
+- Invalid channel operation
+- Channel type mismatch
+
+### Mutexes
+- Invalid mutex usage
+- Mutex already locked
+- Mutex not locked
+- Invalid mutex unlock
+- Deadlock detected
+
+## Platform-Specific
+
+### Operating System
+- Unsupported OS feature
+- Invalid system call
+- Invalid file operation
+- Invalid process operation
+- Invalid signal handling
+
+### Hardware
+- Unsupported CPU instruction
+- Invalid memory alignment
+- Invalid hardware access
+- Platform-specific limitation
+
+## Library Integration
+
+### FFI (Foreign Function Interface)
+- Invalid C binding
+- Invalid C type
+- Invalid C function call
+- Invalid C struct access
+- Invalid C enum usage
+- Invalid external library loading
+
+### Standard Library
+- Invalid IO operation
+- Invalid JSON/YAML parsing
+- Invalid regex pattern
+- Invalid time/date format
+- Invalid network operation
+- Invalid serialization
+
+## Build and Link Errors
+
+### Compilation
+- Source file not found
+- Invalid require statement
+- Circular file dependency
+- Invalid compiler flag
+- Invalid target specification
+- Invalid optimization level
+
+### Linking
+- Library not found
+- Symbol not found
+- Invalid library path
+- Invalid library version
+- Link order dependency
+- Duplicate symbol definition
+
+## Performance Warnings
+
+### Runtime Performance
+- Inefficient algorithm detected
+- Unnecessary allocation
+- Excessive memory usage
+- Suboptimal type usage
+- Performance critical method
+
+### Compile Time
+- Slow compilation warning
+- Large method warning
+- Complex type hierarchy
+- Excessive macro usage
+- Compiler resource limit
+
+## Documentation
+
+### Doc Comments
+- Invalid doc comment syntax
+- Missing documentation
+- Inconsistent documentation
+- Invalid example code
+- Broken documentation link
+
+### Annotations
+- Invalid annotation syntax
+- Unknown annotation
+- Invalid annotation argument
+- Conflicting annotations
+- Deprecated feature usage
+
+## Best Practices
+
+### Code Style
+- Naming convention violation
+- Method too complex
+- Class too large
+- Too many arguments
+- Deep nesting detected
+
+### Code Quality
+- Unreachable code
+- Unused variable/method
+- Duplicate code detected
+- Magic number usage
+- Empty exception handler
+
+## Development Mode Checks
+
+### Runtime Checks
+- Array bounds check
+- Null pointer check
+- Division by zero
+- Integer overflow
+- Stack overflow
+
+### Debug Information
+- Missing debug symbol
+- Invalid debug information
+- Source map mismatch
+- Line number mismatch
+- Invalid backtrace
+
+## Release Mode Optimizations
+
+### Optimization Errors
+- Invalid optimization
+- Optimization conflict
+- Invalid inlining
+- Invalid constant folding
+- Invalid dead code elimination
+
+### Size Optimizations
+- Binary too large
+- Too many symbols
+- Excessive debug information
+- Large type metadata
+- Large method table
+
+Note: This list is comprehensive but may not be exhaustive, as the Crystal compiler continues to evolve and new checks may be added. Some checks might also be dependent on compiler flags, optimization levels, or specific Crystal versions.
+
+Severity levels for these checks can typically be:
+- Error: Prevents compilation
+- Warning: Allows compilation but flags potential issues
+- Notice: Informational messages about potential improvements
+- Debug: Additional information in development mode
