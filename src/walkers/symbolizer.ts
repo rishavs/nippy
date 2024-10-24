@@ -1,28 +1,31 @@
-import { Visitor, ASTNode, DeclarationNode } from "../ast";
+import { Visitor, ASTNode, DeclarationNode, Checker } from "../ast";
+import { MissingSymbolInitializationError, SymbolRedeclarationError, type TranspilingError } from "../errors";
 
-export class Symbolizer extends Visitor {
+export class Symbolizer extends Checker {
 
     // [] variable has already been declared and cannot be redeclared
     // [] variable has not been declred and cannot be assigned
     // [] variable is defined as const and cannot be reassigned
-    
-    visit(node: ASTNode) {
+   
+    visit(node: ASTNode, filepath: string,  errors: TranspilingError[]) {
         if (node instanceof DeclarationNode) {
             if (node.isNewDeclaration) {
                 if (node.scopeOwner!.symbols.hasOwnProperty(node.identifier.value)) {
-                    throw new Error(`Symbol already defined in scope: ${node.identifier.value}`);
+                    let error = new SymbolRedeclarationError(node.identifier.value, filepath, node.at, node.line);
+                    errors.push(error);
                 } else {
                     node.scopeOwner!.symbols[node.identifier.value] = "MINTY";
                 }
             }
             if (node.assignment) {
                 if (!node.scopeOwner!.symbols.hasOwnProperty(node.identifier.value)) {
-                    throw new Error(`Symbol was not declared in scope and cannot be assigned to: ${node.identifier.value}`);
+                    let error = new MissingSymbolInitializationError(node.identifier.value, filepath, node.at, node.line);
+                    errors.push(error);
                 }
             }
         }
     }
 
-    leave (node: ASTNode) {}
+    leave (node: ASTNode, filepath:string, errors: TranspilingError[]) {}
 
 }

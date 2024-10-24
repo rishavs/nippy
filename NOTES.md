@@ -3,7 +3,7 @@ Add a Leave method to visitor. in ast nodes, every time the node is done, call l
 Pass a single errors list to all stages, including the visitors
 Move to the visitor pattern and redo the codegen using this
 
-
+Fix issue with block returning array, while rest of code expects a single error object. Issues with block statements like loops.
 
 // Add parentScope to block node. Add currentScope to context for easy parenting. Use this to copy parent symbols to current symbols
 

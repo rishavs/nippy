@@ -2,7 +2,7 @@
 // --------------------------------------
 // Base Error
 // --------------------------------------
-export class TranspilingError extends Error {
+export abstract class TranspilingError extends Error {
     at: number;
     line: number;
     filepath: string;
@@ -103,6 +103,33 @@ export class MissingSpecificTokenError extends TranspilingError {
         // Modify the stack trace to exclude the constructor call
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, MissingSpecificTokenError);
+        }
+    }
+}
+
+// --------------------------------------
+// Symbol building Errors
+// --------------------------------------
+export class MissingSymbolInitializationError extends TranspilingError {
+    constructor(symbol: string, filepath:string , at: number, line: number) {
+        super(`Missing initialization for the symbol "${symbol}" at ${line}:${at}`, filepath, at, line);
+        this.name = "Declaration Error";
+        
+        // Modify the stack trace to exclude the constructor call
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, MissingSymbolInitializationError);
+        }
+    }
+}
+
+export class SymbolRedeclarationError extends TranspilingError {
+    constructor(symbol: string, filepath:string , at: number, line: number) {
+        super(`Previously declared Symbol "${symbol}" is being redeclared at ${line}:${at}`, filepath, at, line);
+        this.name = "Declaration Error";
+        
+        // Modify the stack trace to exclude the constructor call
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, SymbolRedeclarationError);
         }
     }
 }

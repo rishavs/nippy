@@ -1,5 +1,5 @@
 import { Token, type LexingContext } from "./defs";
-import { IllegalTokenError, UnclosedDelimiterError } from "./errors";
+import { IllegalTokenError, TranspilingError, UnclosedDelimiterError } from "./errors";
 
 
 const isAlphabet = (c: string): boolean =>  
@@ -70,7 +70,7 @@ const kwdOrId = (l: LexingContext): Token => {
 }
 
 
-export const lexFile = (l: LexingContext) => {
+export const lexFile = (l: LexingContext, errors: TranspilingError[]) => {
 
     while (l.i < l.src.length) {
         let c = l.src[l.i];
@@ -91,7 +91,7 @@ export const lexFile = (l: LexingContext) => {
             while (true) {
                 if (l.i >= l.src.length) {
                     let error = new UnclosedDelimiterError('Multiline Comment', ']-', l.filepath, l.i, l.line);
-                    l.errors.push(error);
+                    errors.push(error);
                     break;
                 }
                 
@@ -118,7 +118,7 @@ export const lexFile = (l: LexingContext) => {
 
         } else {
             let error = new IllegalTokenError(c, l.filepath, l.i, l.line);
-            l.errors.push(error);
+            errors.push(error);
             l.i++;
         }
 

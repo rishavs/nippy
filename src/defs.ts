@@ -23,7 +23,6 @@ export class LexingContext {
     line:       number;
     filepath:   string;
 
-    errors: TranspilingError[] = [];
     tokens: Token[] = [];
 
     constructor(filepath: string, src: string ) {
@@ -38,7 +37,6 @@ export class ParsingContext {
     filepath: string;
     tokens: Token[];
 
-    errors: TranspilingError[] = [];
     program: RootNode;
     i: number;
     currentDepth: number = 0;

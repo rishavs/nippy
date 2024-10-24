@@ -2,6 +2,7 @@
 // Abstract nodes
 
 import type { Block } from "typescript";
+import type { TranspilingError } from "./errors";
 
 // ---------------------------
 export abstract class ASTNode {
@@ -118,4 +119,29 @@ export class FloatNode extends ASTNode {
 export abstract class Visitor {
     visit(node: ASTNode) {}
     leave(node: ASTNode) {}
+}
+
+export abstract class Checker {
+    visit(node: ASTNode, filepath: string, errors: TranspilingError[]) {}
+    leave(node: ASTNode, filepath: string, errors: TranspilingError[]) {}
+}
+// ---------------------------
+// Walker
+// ---------------------------
+
+export const walk = (node: ASTNode, filepath: string, errors: TranspilingError[], c: Checker) => {
+    c.visit(node, filepath, errors);
+
+    // walk down the tree
+    if (node instanceof RootNode) {
+        walk(node.block, filepath, errors, c);
+    } else if (node instanceof BlockNode) {
+        node.statements.forEach((stmt) => walk(stmt, filepath, errors, c));
+    } else if (node instanceof DeclarationNode) {
+        walk(node.identifier, filepath, errors, c);
+        if (node.assignment) {
+            walk(node.assignment, filepath, errors, c);;
+        }
+    } 
+    c.leave(node, filepath, errors);
 }

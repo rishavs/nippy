@@ -1,6 +1,7 @@
-import { Visitor, ASTNode, RootNode, BlockNode, DeclarationNode, IdentifierNode, IntNode, FloatNode } from "../ast";
+import { Visitor, ASTNode, RootNode, BlockNode, DeclarationNode, IdentifierNode, IntNode, FloatNode, Checker } from "../ast";
+import type { TranspilingError } from "../errors";
 
-export class ASTPrinter extends Visitor {
+export class ASTPrinter extends Checker {
     nodesVisited = 0;
     msg: string = "";
 

@@ -2,7 +2,7 @@ import { ASTNode, BlockNode, DeclarationNode, FloatNode, IdentifierNode, IntNode
 import type { ParsingContext } from "./defs"
 import { MissingSpecificTokenError, MissingSyntaxError, TranspilingError, UnhandledError } from "./errors";
 
-export const parseFile = (p: ParsingContext) => {
+export const parseFile = (p: ParsingContext, errors: TranspilingError[]) => {
 
     let bl = block(p, p.program);
     if (bl instanceof BlockNode) {
@@ -13,7 +13,7 @@ export const parseFile = (p: ParsingContext) => {
         bl.scopeOwner = null;
         bl.scopeDepth = 0;
     } else {
-        p.errors = bl;
+        errors = [...bl];
     }
 }
 
