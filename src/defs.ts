@@ -1,4 +1,5 @@
 import { ASTNode, RootNode } from "./ast";
+import type { TranspilingError } from "./errors";
 
 export class Token {
     kind:   string;
@@ -13,6 +14,40 @@ export class Token {
         this.start =    start;
         this.end =      end;
         this.line =     line;
+    }
+}
+
+export class TranspilingContext {
+    errors: TranspilingError[] = [];
+    
+    filepath: string;
+    src: string;
+    cCode: string ='';
+
+    // Lexer
+    li: number = 0;
+    line: number = 0;
+    tokens: Token[] = [];
+
+    // Parser
+    pi: number = 0;
+    root: RootNode = new RootNode(0, 0);
+
+    // Codegen
+    cFileCode   : string = "";
+    hFileCode   : string = "";
+
+    currentDepth: number = 0;
+
+    usesString  : boolean = false;
+    usesInt     : boolean = false;
+    usesFloat   : boolean = false;
+
+    exitCode    : number = 0;
+
+    constructor(filepath: string, src: string) {
+        this.filepath = filepath;
+        this.src = src;
     }
 }
 
