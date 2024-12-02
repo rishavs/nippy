@@ -3,11 +3,14 @@
 
 import type { Block } from "typescript";
 import type { TranspilingError } from "./errors";
+import type { SymbolInfo } from "./defs";
 
 // ---------------------------
 export abstract class ASTNode {
     at: number;
     line: number;
+
+    type: string = "";                          // type of the node
 
     parent: ASTNode | null = null;              // immediate parent
     depth: number = 0;                          // distance from root
@@ -40,7 +43,7 @@ export class RootNode extends ASTNode {
 
 export class BlockNode extends ASTNode {
     statements  : ASTNode[] = []
-    symbols     : Record<string, string> = {}; // name => type
+    symbols     : Record<string, SymbolInfo> = {}; // name => type
     constructor(at: number, line: number) {
         super(at, line);
     }
@@ -76,40 +79,28 @@ export class DeclarationNode extends ASTNode {
 // ---------------------------
 export class IdentifierNode extends ASTNode {
     value: string;
+    type: string = "";
     constructor(at: number, line: number, value: string) {
         super(at, line);
         this.value = value;
-    }
-
-    accept(v: Visitor) {
-        v.visit(this);
-        v.leave(this);
     }
 }
 
 export class IntNode extends ASTNode {
     value: string;
+    type: string = "Int";
     constructor(at: number, line: number, value: string) {
         super(at, line);
         this.value = value;
-    }
-
-    accept(v: Visitor) {
-        v.visit(this);
-        v.leave(this);
     }
 }
 
 export class FloatNode extends ASTNode {
     value: string;
+    type: string = "Dec";
     constructor(at: number, line: number, value: string) {
         super(at, line);
         this.value = value;
-    }
-
-    accept(v: Visitor) {
-        v.visit(this);
-        v.leave(this);
     }
 }
 

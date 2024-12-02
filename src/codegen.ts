@@ -63,14 +63,13 @@ const genRoot = (g:CodegenContext): string => {
 export const genCode = (g: CodegenContext) => {
 
     // Add main function
-    let mainFunc = "\nint main () {\n"
-    mainFunc += genRoot(g)
-    mainFunc += "}\n"
+    let mainFuncStart = "\nint main () {\n"
+    let mainFuncClosure = "\n}"
 
     // Add Headers afterwards, based on what all was used
     let headers  = "#include <stdlib.h>\n"
     headers += g.usesInt ? "#include <stdint.h>\n" : ""
-    
-    g.cFileCode = headers + mainFunc 
+    let footer = `\n    return ${ g.exitCode };` 
+    g.cFileCode = headers + mainFuncStart + genRoot(g) + footer + mainFuncClosure;
     
 };

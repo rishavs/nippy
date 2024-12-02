@@ -37,7 +37,7 @@ export class ASTPrinter extends Checker {
                 return key + ": " + (val && val.constructor.name ? val.constructor.name : "null");
             }
             if (key == "symbols") {
-                return "symbols: " + JSON.stringify(val);
+                return "symbols: " + JSON.stringify(Object.keys(val));
             }
 
         }).filter(Boolean);

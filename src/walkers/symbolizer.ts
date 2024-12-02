@@ -1,4 +1,5 @@
 import { Visitor, ASTNode, DeclarationNode, Checker } from "../ast";
+import { SymbolInfo } from "../defs";
 import { MissingSymbolInitializationError, SymbolRedeclarationError, type TranspilingError } from "../errors";
 
 export class Symbolizer extends Checker {
@@ -14,7 +15,8 @@ export class Symbolizer extends Checker {
                     let error = new SymbolRedeclarationError(node.identifier.value, filepath, node.at, node.line);
                     errors.push(error);
                 } else {
-                    node.scopeOwner!.symbols[node.identifier.value] = "MINTY";
+                    // Add symbol to table
+                    node.scopeOwner!.symbols[node.identifier.value] = new SymbolInfo(node.identifier.value, node.isMutable, node);
                 }
             }
             if (node.assignment) {

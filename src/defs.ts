@@ -1,5 +1,4 @@
-import { BlockNode, RootNode } from "./ast";
-import { TranspilingError } from "./errors"
+import { ASTNode, RootNode } from "./ast";
 
 export class Token {
     kind:   string;
@@ -63,8 +62,25 @@ export class CodegenContext {
     usesInt     : boolean = false;
     usesFloat   : boolean = false;
 
+    exitCode    : number = 0;
+
     constructor(filepath: string, program: RootNode) {
         this.program = program;
         this.filepath = filepath;
     }
 }
+
+export class SymbolInfo {
+    type: string;
+    isMutable: boolean;
+
+    node: ASTNode;
+
+    constructor(type: string, isMutable: boolean, node: ASTNode) {
+        this.type = type;
+        this.isMutable = isMutable;
+        this.node = node;
+    }
+}
+
+export type SymbolsTable = Record<string, SymbolInfo>;
